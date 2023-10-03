@@ -21,7 +21,7 @@ export interface Disc {
   comments?: string | null;
 }
 
-export const API_BASE_URL = 'http://localhost:3001'; // Update the port if needed
+export const API_BASE_URL = 'https://lost-and-found-api-gl8z.onrender.com'; // Update the port if needed
 //export const API_BASE_URL = 'http://127.0.0.1:5000'; // Update the port if needed
 
 
