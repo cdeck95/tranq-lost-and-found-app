@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  web:
+    build:
+      dockerfile: lost-and-found-client/Dockerfile
+      context: "."
+    image: "lost-and-found-client:latest"
+    command: "npm start"
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./lost-and-found-client/:/app
+      - /lost-and-found-client/node_modules
+    networks:
+      - lost-and-found-client
+  api:
+    build:
+      dockerfile: api/Dockerfile
+      context: "."
+    image: "lost-and-found-client:latest"
+    command: "npm start"
+    stdin_open: true
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./api/:/app
+      - /api/node_modules
+    networks:
+      - lost-and-found-client
+
+networks:
+   lost-and-found-client:
+       driver: bridge
