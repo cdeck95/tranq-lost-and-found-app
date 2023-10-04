@@ -72,7 +72,6 @@ function Inventory() {
       });
   };
 
-  const [editModalOpen, setEditModalOpen] = useState(false);
   const [editedDiscID, setEditedDiscID] = useState<number>(-1);
   const [editedDisc, setEditedDisc] = useState<Disc | null>(null);
 
@@ -84,29 +83,6 @@ function Inventory() {
   const stopEditing = () => {
     saveEditedDisc(editedDisc!);
   };
-
-  // const openEditModal = (disc: Disc) => {
-  //   setEditedDisc(disc);
-  //   setEditModalOpen(true);
-  // };
-
-  // const closeEditModal = () => {
-  //   setEditedDisc(null);
-  //   setEditModalOpen(false);
-  // };
-
-  // const updateDisc = (discId: string, updatedData: any) => {
-  //   axios
-  //     .put(`/api/edit-disc/${discId}`, updatedData)
-  //     .then((response) => {
-  //       console.log("Disc updated:", response.data);
-  //       // Handle success or perform other actions
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error updating disc:", error);
-  //       // Handle error or display an error message
-  //     });
-  // };
 
   const saveEditedDisc = (editedDiscIn: Disc) => {
     if (editedDiscIn) {
@@ -261,8 +237,6 @@ function Inventory() {
           ))}
         </tbody>
       </table>
-      {/* Edit Modal */}
-      {/* {editedDisc && <EditDialog open={editModalOpen} setOpen={setEditModalOpen} onClose={closeEditModal} disc={editedDisc!}/>} */}
     </div>
   );
 }
