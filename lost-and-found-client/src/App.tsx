@@ -19,10 +19,11 @@ export interface Disc {
   dateClaimed?: string | null;
   status: string;
   comments?: string | null;
+  color: string;
 }
 
-export const API_BASE_URL = 'https://lost-and-found-api-gl8z.onrender.com'; //production URL
-//export const API_BASE_URL = 'http://127.0.0.1:3001'; // local testing
+//export const API_BASE_URL = 'https://lost-and-found-api-gl8z.onrender.com'; //production URL
+export const API_BASE_URL = 'http://127.0.0.1:3001'; // local testing
 
 
 function App() {

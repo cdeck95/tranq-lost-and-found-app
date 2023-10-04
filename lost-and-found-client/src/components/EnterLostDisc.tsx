@@ -15,6 +15,7 @@ function EnterLostDisc() {
     bin: '',
     comments: '',
     dateFound: new Date().toISOString().split('T')[0],
+    color: '',
   });
 
   const [isLoading, setIsLoading] = useState(false); // Loading state
@@ -50,6 +51,7 @@ function EnterLostDisc() {
           bin: '',
           comments: '',
           dateFound: new Date().toISOString().split('T')[0],
+          color: '',
         });
         setIsLoading(false);
       })
@@ -74,6 +76,17 @@ function EnterLostDisc() {
           />
         </div>
         <div className="form-group">
+          <label htmlFor="phoneNumber">Phone Number:</label>
+          <input
+            type="tel" // Use type="tel" to display the numeric keyboard on mobile
+            id="phoneNumber"
+            name="phoneNumber"
+            value={discData.phoneNumber}
+            onChange={handleChange}
+            placeholder="xxx-xxx-xxxx"
+          />
+        </div>
+        <div className="form-group">
           <label htmlFor="disc">Disc:</label>
           <input
             type="text"
@@ -84,14 +97,13 @@ function EnterLostDisc() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="phoneNumber">Phone Number:</label>
+          <label htmlFor="color">Color:</label>
           <input
-            type="tel" // Use type="tel" to display the numeric keyboard on mobile
-            id="phoneNumber"
-            name="phoneNumber"
-            value={discData.phoneNumber}
+            type="text"
+            id="color"
+            name="color"
+            value={discData.color}
             onChange={handleChange}
-            placeholder="xxx-xxx-xxxx"
           />
         </div>
         <div className="form-group">
