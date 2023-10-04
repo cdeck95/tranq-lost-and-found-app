@@ -4,6 +4,9 @@ import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
 import { DateTime } from 'luxon';
 import { CircularProgress } from '@mui/material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EditDialog from './EditDialog';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 
 function Inventory() {
     const [inventory, setInventory] = useState<Disc[]>([]); // Provide the type 'Disc[]'
@@ -69,6 +72,58 @@ function Inventory() {
       });
   };
 
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editedDiscID, setEditedDiscID] = useState<number>(-1);
+  const [editedDisc, setEditedDisc] = useState<Disc | null>(null);
+
+  const startEditing = (disc: Disc) => {
+    setEditedDisc(disc);
+    setEditedDiscID(disc.id!);
+  };
+
+  const stopEditing = () => {
+    saveEditedDisc(editedDisc!);
+  };
+
+  // const openEditModal = (disc: Disc) => {
+  //   setEditedDisc(disc);
+  //   setEditModalOpen(true);
+  // };
+
+  // const closeEditModal = () => {
+  //   setEditedDisc(null);
+  //   setEditModalOpen(false);
+  // };
+
+  // const updateDisc = (discId: string, updatedData: any) => {
+  //   axios
+  //     .put(`/api/edit-disc/${discId}`, updatedData)
+  //     .then((response) => {
+  //       console.log("Disc updated:", response.data);
+  //       // Handle success or perform other actions
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error updating disc:", error);
+  //       // Handle error or display an error message
+  //     });
+  // };
+
+  const saveEditedDisc = (editedDiscIn: Disc) => {
+    if (editedDiscIn) {
+      axios.put(`${API_BASE_URL}/api/edit-disc/${editedDiscIn.id}`, editedDiscIn)
+        .then((response) => {
+          console.log('Disc updated:', response.data);
+          // Refresh the inventory or handle success as needed
+        })
+        .catch((error) => {
+          console.error('Error updating disc:', error);
+          // Handle error or display an error message
+        });
+    }
+    setEditedDisc(null);
+    setEditedDiscID(-1);
+  };
+
   return (
     <div className="page-container"> 
       <h1>Inventory</h1>
@@ -83,11 +138,11 @@ function Inventory() {
       <table className="inventory-table"> {/* Apply className */}
         <thead>
           <tr>
+            <th className="table-header">Edit</th> {/* Add an "Edit" header */}
             <th className="table-header">ID</th> {/* Apply className */}
-            <th className="table-header">Course</th> {/* Apply className */}
             <th className="table-header">Name</th> {/* Apply className */}
-            <th className="table-header">Disc</th> {/* Apply className */}
             <th className="table-header">Phone Number</th> {/* Apply className */}
+            <th className="table-header">Disc</th> {/* Apply className */}
             <th className="table-header">Bin</th> {/* Apply className */}
             <th className="table-header">Date Found</th> {/* Apply className */}
             <th className="table-header">Comments</th> {/* Apply className */}
@@ -97,20 +152,107 @@ function Inventory() {
         <tbody>
             {filteredInventory.map((disc: Disc) => (
             <tr key={disc.id}>
+              {editedDiscID===disc.id
+              ? <td className="table-cell"><SaveOutlinedIcon sx={{ cursor: "pointer"}} onClick={stopEditing}></SaveOutlinedIcon></td>
+              : <td className="table-cell"><EditOutlinedIcon sx={{ cursor: "pointer"}} onClick={() => startEditing(disc)}></EditOutlinedIcon></td>
+              }
               <td className="table-cell">{disc.id}</td> {/* Apply className */}
-              <td className="table-cell">{disc.course}</td> {/* Apply className */}
-              <td className="table-cell">{disc.name}</td> {/* Apply className */}
-              <td className="table-cell">{disc.disc}</td> {/* Apply className */}
-              <td className="table-cell">{disc.phoneNumber}</td> {/* Apply className */}
-              <td className="table-cell">{disc.bin}</td> {/* Apply className */}
-              <td className="table-cell">{disc.dateFound}</td> {/* Apply className */}
-              <td className="table-cell">{disc.comments}</td> {/* Apply className */}
+              <td className="table-cell">
+                {editedDiscID === disc.id ? (
+                  <input
+                    type="text"
+                    value={disc.name}
+                    style={{ width: '90%' }}
+                    onChange={(e) => {
+                      disc.name = e.target.value;
+                      setEditedDisc({ ...disc, name: e.target.value });
+                    }}
+                  />
+                ) : (
+                  disc.name // Display text when not editing
+                )}
+              </td>
+              <td className="table-cell">
+                {editedDiscID === disc.id ? (
+                  <input
+                    type="number"
+                    value={disc.phoneNumber}
+                    style={{ width: '90%' }}
+                    onChange={(e) => {
+                      disc.phoneNumber = e.target.value;
+                      setEditedDisc({ ...disc, phoneNumber: e.target.value });
+                    }}
+                  />
+                ) : (
+                  disc.phoneNumber // Display text when not editing
+                )}
+              </td>
+              <td className="table-cell">
+                {editedDiscID === disc.id ? (
+                  <input
+                    type="text"
+                    value={disc.disc}
+                    style={{ width: '90%' }}
+                    onChange={(e) => {
+                      disc.disc = e.target.value;
+                      setEditedDisc({ ...disc, disc: e.target.value });
+                    }}
+                  />
+                ) : (
+                  disc.disc // Display text when not editing
+                )}
+              </td>
+              <td className="table-cell">
+                {editedDiscID === disc.id ? (
+                  <input
+                    type="text"
+                    value={disc.bin}
+                    style={{ width: '90%' }}
+                    onChange={(e) => {
+                      disc.bin = e.target.value;
+                      setEditedDisc({ ...disc, bin: e.target.value });
+                    }}
+                  />
+                ) : (
+                  disc.bin // Display text when not editing
+                )}
+              </td>
+              <td className="table-cell">
+                {editedDiscID === disc.id ? (
+                  <input
+                    type="date"
+                    value={disc.dateFound}
+                    style={{ width: '90%' }}
+                    onChange={(e) => {
+                      disc.dateFound = e.target.value;
+                      setEditedDisc({ ...disc, dateFound: e.target.value });
+                    }}
+                  />
+                ) : (
+                  disc.dateFound // Display text when not editing
+                )}
+              </td>
+              <td className="table-cell">
+                {editedDiscID === disc.id ? (
+                  <input
+                    type="text"
+                    value={disc.comments!}
+                    style={{ width: '90%' }}
+                    onChange={(e) => {
+                      disc.comments = e.target.value;
+                      setEditedDisc({ ...disc, comments: e.target.value });
+                    }}
+                  />
+                ) : (
+                  disc.comments // Display text when not editing
+                )}
+              </td>
               <td className="table-cell">
                 {isLoading ? (
                 <div><CircularProgress/></div>
                 ) : (
                     <div>
-                        {disc.id!==claimedDisc && <button onClick={() => markAsClaimed(disc.id!.toString())}>Mark as Claimed</button>}
+                        {disc.id!==claimedDisc && <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>Mark as Claimed</button>}
                     </div>
                     )}
                 {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
@@ -119,6 +261,8 @@ function Inventory() {
           ))}
         </tbody>
       </table>
+      {/* Edit Modal */}
+      {/* {editedDisc && <EditDialog open={editModalOpen} setOpen={setEditModalOpen} onClose={closeEditModal} disc={editedDisc!}/>} */}
     </div>
   );
 }
