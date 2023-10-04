@@ -115,14 +115,17 @@ function Inventory() {
 
   return (
     <div className="page-container"> 
-      <h1>Inventory</h1>
-      <div className="search-bar">
-      <input
-        type="text"
-        placeholder="Search by phone number, disc, or name"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      <div className="col-center">
+        {/* <h1>Inventory</h1> */}
+        <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search by phone number, disc, or name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+      
     </div>
       <table className="inventory-table"> 
         <thead>
