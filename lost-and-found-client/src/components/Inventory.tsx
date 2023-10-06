@@ -3,7 +3,7 @@ import axios from 'axios';
 import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
 import { DateTime } from 'luxon';
-import { CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
+import { CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField, useMediaQuery, useTheme } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditDialog from './EditDialog';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
@@ -26,6 +26,10 @@ function Inventory() {
     const [sortDirection, setSortDirection] = useState('asc'); // Default sorting direction
     const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
     const [showPastDeadlines, setShowPastDeadlines] = useState(false);
+    const theme = useTheme();
+    const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
+    const isMediumLarge = useMediaQuery(theme.breakpoints.down("lg"));
+    const isLarge = useMediaQuery(theme.breakpoints.down("xl"));
 
     const toggleRow = (rowId: RowId) => {
       if (expandedRows.includes(rowId)) {
@@ -169,10 +173,10 @@ function Inventory() {
       <div className="col-center">
         {/* <h1>Inventory</h1> */}
         <div className="row">
-          <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: 300 }}>
+          <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "300px" : "700px" }}>
             <InputBase
               sx={{ ml: 1, flex: 1 }}
-              placeholder="Search by phone number, disc, or name"
+              placeholder="Search by phone number, disc, name or comments"
               onChange={(e) => setSearchQuery(e.target.value)}
               value={searchQuery}
               type="text"
