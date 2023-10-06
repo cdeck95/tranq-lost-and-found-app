@@ -165,6 +165,30 @@ function Inventory() {
     const toggleShowPastDeadlines = () => {
       setShowPastDeadlines(!showPastDeadlines);
     };
+
+    const markAsFiveDollarBox = (discId: string) => {
+      setIsLoading(true);
+      console.log("Marking as $5 Box");
+    
+      // Make an API call to mark the disc as a $5 Box
+      // You can implement this function according to your API endpoint
+    
+      // After the API call, you can update the state and display a success message
+      // Example:
+      // axios.put(`${API_BASE_URL}/api/mark-as-five-dollar-box/${discId}`)
+      //   .then((response) => {
+      //     console.log('Disc marked as $5 Box:', response.data);
+      //     setIsLoading(false);
+      //     setSuccessMessage('Disc marked as $5 Box successfully');
+      //     setClaimedDisc(parseInt(discId));
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error marking disc as $5 Box:', error);
+      //     setIsLoading(false);
+      //     setSuccessMessage('Error marking disc as $5 Box');
+      //   });
+    };
+    
     
     
 
@@ -244,11 +268,22 @@ function Inventory() {
                 {isLoading ? (
                 <div><CircularProgress/></div>
                 ) : (
-                    <div>
-                      
-                        {disc.id!==claimedDisc && <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>Mark as Claimed</button>}
-                    </div>
-                    )}
+                  <div>
+                    {disc.id !== claimedDisc ? (
+                      // Check if the pickup deadline is in the past
+                      //THIS ISNT WORKING YET
+                      new Date(disc.pickupDeadline!) < new Date() ? (
+                        <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
+                          Mark as $5 Box
+                        </button>
+                      ) : (
+                        <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
+                          Mark as Claimed
+                        </button>
+                      )
+                    ) : null}
+                  </div>
+                )}
                 {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
               </td>
               </tr>
