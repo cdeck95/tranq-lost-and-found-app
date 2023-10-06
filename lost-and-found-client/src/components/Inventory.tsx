@@ -48,6 +48,7 @@ function Inventory() {
           dateFound: convertToEST(disc.dateFound),
           dateTexted: disc.dateTexted ? convertToEST(disc.dateTexted) : null,
           dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
+          pickupDeadline: disc.pickupDeadline ? convertToEST(disc.pickupDeadline) : null,
         }));
         console.log('Inventory:', convertedInventory);
   
@@ -317,6 +318,22 @@ function Inventory() {
                           />
                         ) : (
                           <p><strong>Status: </strong>{disc.status}</p>
+                        )}
+                      </div>
+                      <div className="row">
+                        {editedDiscID === disc.id ? (
+                          <TextField
+                            id="outlined-uncontrolled"
+                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                            label="Pickup Deadline"
+                            defaultValue={disc.pickupDeadline}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              disc.pickupDeadline = e.target.value;
+                              setEditedDisc({ ...disc, pickupDeadline: e.target.value });
+                              }}
+                          />
+                        ) : (
+                          <p><strong>Pickup Deadline: </strong>{disc.pickupDeadline}</p>
                         )}
                       </div>
                       <div className="row">
