@@ -4,6 +4,7 @@ import EnterLostDisc from './EnterLostDisc';
 import Inventory from './Inventory';
 import '../styles/App.css';
 import { Button, ButtonGroup, Typography } from '@mui/material'; // Import Button and ButtonGroup from MUI
+import ExpiredPickups from './ExpiredPickups';
 
 
 function AdminPanel() {
@@ -45,6 +46,13 @@ function AdminPanel() {
             >
               Inventory
             </Button>
+            {/* <Button
+              onClick={() => switchTab('expired')}
+              color={activeTab === 'expired' ? "primary" : "inherit"}
+              className={activeTab === 'expired' ? 'active' : ''}
+            >
+              Expired Pickups
+            </Button> */}
           </ButtonGroup>
         </nav>
       </header>
@@ -52,6 +60,7 @@ function AdminPanel() {
         <main className="container">
           {activeTab === 'enterLostDisc' && <EnterLostDisc />}
           {activeTab === 'inventory' && <Inventory />}
+          {/* {activeTab === 'expired' && <ExpiredPickups />} */}
         </main>
         ) : ( // Render password form if the password is not entered
         <div id="password-form">

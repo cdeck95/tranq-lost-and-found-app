@@ -3,19 +3,18 @@ import axios from 'axios';
 import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
 import { DateTime } from 'luxon';
-import { CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
+import { CircularProgress, Divider, FormControl, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditDialog from './EditDialog';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { SelectChangeEvent } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
 
 
 // Define a type for row IDs, assuming it's a number
 type RowId = number;
 
-function Inventory() {
+function ExpiredPickups() {
     const [inventory, setInventory] = useState<Disc[]>([]); // Provide the type 'Disc[]'
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredInventory, setFilteredInventory] = useState(inventory); // Initialize with inventory data
@@ -25,7 +24,7 @@ function Inventory() {
     const [sortOption, setSortOption] = useState<keyof Disc>('dateFound'); // Default sorting option
     const [sortDirection, setSortDirection] = useState('asc'); // Default sorting direction
     const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
-    const [showPastDeadlines, setShowPastDeadlines] = useState(false);
+
 
     const toggleRow = (rowId: RowId) => {
       if (expandedRows.includes(rowId)) {
@@ -70,36 +69,20 @@ function Inventory() {
             }
           });
     
-          // // Filter the inventory based on the search query
-          // const filtered = sortedInventory.filter((disc: Disc) =>
-          //   disc.phoneNumber.includes(searchQuery) ||
-          //   disc.disc.includes(searchQuery) ||
-          //   disc.name.includes(searchQuery) ||
-          //   disc.comments?.includes(searchQuery)
-          // );
+          // Filter the inventory based on the search query
+          const filtered = sortedInventory.filter((disc: Disc) =>
+            disc.phoneNumber.includes(searchQuery) ||
+            disc.disc.includes(searchQuery) ||
+            disc.name.includes(searchQuery) ||
+            disc.comments?.includes(searchQuery)
+          );
     
-          // setFilteredInventory(filtered);
-          const filteredInventory = sortedInventory.filter((disc: Disc) => {
-            const isMatch =
-              disc.phoneNumber.includes(searchQuery) ||
-              disc.disc.includes(searchQuery) ||
-              disc.name.includes(searchQuery) ||
-              disc.comments?.includes(searchQuery);
-          
-            // Check if the user wants to see past deadlines and if the pickupDeadline is in the past
-            if (showPastDeadlines) {
-              return isMatch && (!disc.pickupDeadline || new Date(disc.pickupDeadline) < new Date());
-            } else {
-              return isMatch;
-            }
-          });
-          
-          setFilteredInventory(filteredInventory);
+          setFilteredInventory(filtered);
         })
         .catch((error) => {
           console.error('Error fetching inventory:', error);
         });
-    }, [searchQuery, showPastDeadlines, sortDirection, sortOption]);
+    }, [searchQuery, sortDirection, sortOption]);
 
     const markAsClaimed = (discId: string) => {
       setIsLoading(true); // Set loading state to true
@@ -157,11 +140,6 @@ function Inventory() {
       console.log('Selected Direction:', selectedDirection);
       setSortDirection(selectedDirection);
     };
-
-    const toggleShowPastDeadlines = () => {
-      setShowPastDeadlines(!showPastDeadlines);
-    };
-    
     
 
   return (
@@ -198,16 +176,6 @@ function Inventory() {
                 <MenuItem value="desc">Descending</MenuItem>
               </Select>
             </FormControl>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showPastDeadlines}
-                  onChange={toggleShowPastDeadlines}
-                  color="primary"
-                />
-              }
-              label="Show Past Deadlines"
-            />
           </div>
         </div>
     </div>
@@ -576,4 +544,4 @@ function Inventory() {
   );
 }
 
-export default Inventory;
+export default ExpiredPickups;
