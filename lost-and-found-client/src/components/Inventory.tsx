@@ -3,11 +3,12 @@ import axios from 'axios';
 import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
 import { DateTime } from 'luxon';
-import { CircularProgress, Divider, IconButton, InputBase, Paper, TextField } from '@mui/material';
+import { CircularProgress, Divider, FormControl, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditDialog from './EditDialog';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+import { SelectChangeEvent } from '@mui/material';
 
 
 // Define a type for row IDs, assuming it's a number
@@ -20,108 +21,132 @@ function Inventory() {
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [claimedDisc, setClaimedDisc] = useState<number>(0); // Provide the type 'Disc | null'
+    const [sortOption, setSortOption] = useState<keyof Disc>('dateFound'); // Default sorting option
+    const [sortDirection, setSortDirection] = useState('asc'); // Default sorting direction
+    const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
 
+    const toggleRow = (rowId: RowId) => {
+      if (expandedRows.includes(rowId)) {
+        setExpandedRows(expandedRows.filter((id) => id !== rowId));
+      } else {
+        setExpandedRows([...expandedRows, rowId]);
+      }
+    };
 
-  const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
+    const convertToEST = (utcTimestamp: string) => {
+      const dateUTC = DateTime.fromISO(utcTimestamp, { zone: 'utc' });
+      // const dateEST = dateUTC.setZone('America/New_York');
+      
+      // Format the date to display only the date (without time)
+      //return dateEST.toFormat('yyyy-MM-dd');
+      return dateUTC.toFormat('yyyy-MM-dd');
+    };
 
-  const toggleRow = (rowId: RowId) => {
-    if (expandedRows.includes(rowId)) {
-      setExpandedRows(expandedRows.filter((id) => id !== rowId));
-    } else {
-      setExpandedRows([...expandedRows, rowId]);
-    }
-  };
-
-  const convertToEST = (utcTimestamp: string) => {
-    const dateUTC = DateTime.fromISO(utcTimestamp, { zone: 'utc' });
-    // const dateEST = dateUTC.setZone('America/New_York');
-    
-    // Format the date to display only the date (without time)
-    //return dateEST.toFormat('yyyy-MM-dd');
-    return dateUTC.toFormat('yyyy-MM-dd');
-  };
-
-  useEffect(() => {
-    axios.get(`${API_BASE_URL}/api/inventory`)
-      .then((response) => {
-        // Convert UTC timestamps to EST
-        const convertedInventory = response.data.map((disc: Disc) => ({
-          ...disc,
-          dateFound: convertToEST(disc.dateFound),
-          dateTexted: disc.dateTexted ? convertToEST(disc.dateTexted) : null,
-          dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
-          pickupDeadline: disc.pickupDeadline ? convertToEST(disc.pickupDeadline) : null,
-        }));
-        console.log('Inventory:', convertedInventory);
-  
-        setInventory(convertedInventory);
-  
-        // Filter the inventory based on the search query
-        const filtered = convertedInventory.filter((disc: Disc) =>
-          disc.phoneNumber.includes(searchQuery) ||
-          disc.disc.includes(searchQuery) ||
-          disc.name.includes(searchQuery) ||
-          disc.comments?.includes(searchQuery)
-        );
-  
-        setFilteredInventory(filtered);
-      })
-      .catch((error) => {
-        console.error('Error fetching inventory:', error);
-      });
-  }, [searchQuery]);
-
-  const markAsClaimed = (discId: string) => {
-    setIsLoading(true); // Set loading state to true
-  
-    axios.put(`${API_BASE_URL}/api/mark-claimed/${discId}`)
-      .then((response) => {
-        console.log('Disc marked as claimed:', response.data);
-        setIsLoading(false); // Set loading state to false
-        setSuccessMessage('Disc claimed successfully'); // Set success message
-        setClaimedDisc(parseInt(discId)); // Set claimedDisc to the ID of the disc being marked as claimed
-      })
-      .catch((error) => {
-        console.error('Error marking disc as claimed:', error);
-        setIsLoading(false); // Set loading state to false in case of an error
-        setSuccessMessage('Error marking disc as claimed'); // Set error message
-      });
-  };
-
-  const [editedDiscID, setEditedDiscID] = useState<number>(-1);
-  const [editedDisc, setEditedDisc] = useState<Disc | null>(null);
-
-  const startEditing = (disc: Disc) => {
-    setEditedDisc(disc);
-    setEditedDiscID(disc.id!);
-  };
-
-  const stopEditing = () => {
-    saveEditedDisc(editedDisc!);
-  };
-
-  const saveEditedDisc = (editedDiscIn: Disc) => {
-    if (editedDiscIn) {
-      axios.put(`${API_BASE_URL}/api/edit-disc/${editedDiscIn.id}`, editedDiscIn)
+    useEffect(() => {
+      axios.get(`${API_BASE_URL}/api/inventory`)
         .then((response) => {
-          console.log('Disc updated:', response.data);
-          // Refresh the inventory or handle success as needed
+          // Convert UTC timestamps to EST
+          const convertedInventory = response.data.map((disc: Disc) => ({
+            ...disc,
+            dateFound: convertToEST(disc.dateFound),
+            dateTexted: disc.dateTexted ? convertToEST(disc.dateTexted) : null,
+            dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
+            pickupDeadline: disc.pickupDeadline ? convertToEST(disc.pickupDeadline) : null,
+          }));
+          console.log('Inventory:', convertedInventory);
+    
+          setInventory(convertedInventory);
+
+          const sortedInventory = [...convertedInventory].sort((a: Disc, b: Disc) => {
+            const aValue = a[sortOption] as string; // Cast to string
+            const bValue = b[sortOption] as string; // Cast to string
+          
+            if (sortDirection === 'asc') {
+              return aValue.localeCompare(bValue);
+            } else {
+              return bValue.localeCompare(aValue);
+            }
+          });
+    
+          // Filter the inventory based on the search query
+          const filtered = sortedInventory.filter((disc: Disc) =>
+            disc.phoneNumber.includes(searchQuery) ||
+            disc.disc.includes(searchQuery) ||
+            disc.name.includes(searchQuery) ||
+            disc.comments?.includes(searchQuery)
+          );
+    
+          setFilteredInventory(filtered);
         })
         .catch((error) => {
-          console.error('Error updating disc:', error);
-          // Handle error or display an error message
+          console.error('Error fetching inventory:', error);
         });
-    }
-    setEditedDisc(null);
-    setEditedDiscID(-1);
-  };
+    }, [searchQuery, sortDirection, sortOption]);
+
+    const markAsClaimed = (discId: string) => {
+      setIsLoading(true); // Set loading state to true
+    
+      axios.put(`${API_BASE_URL}/api/mark-claimed/${discId}`)
+        .then((response) => {
+          console.log('Disc marked as claimed:', response.data);
+          setIsLoading(false); // Set loading state to false
+          setSuccessMessage('Disc claimed successfully'); // Set success message
+          setClaimedDisc(parseInt(discId)); // Set claimedDisc to the ID of the disc being marked as claimed
+        })
+        .catch((error) => {
+          console.error('Error marking disc as claimed:', error);
+          setIsLoading(false); // Set loading state to false in case of an error
+          setSuccessMessage('Error marking disc as claimed'); // Set error message
+        });
+    };
+
+    const [editedDiscID, setEditedDiscID] = useState<number>(-1);
+    const [editedDisc, setEditedDisc] = useState<Disc | null>(null);
+
+    const startEditing = (disc: Disc) => {
+      setEditedDisc(disc);
+      setEditedDiscID(disc.id!);
+    };
+
+    const stopEditing = () => {
+      saveEditedDisc(editedDisc!);
+    };
+
+    const saveEditedDisc = (editedDiscIn: Disc) => {
+      if (editedDiscIn) {
+        axios.put(`${API_BASE_URL}/api/edit-disc/${editedDiscIn.id}`, editedDiscIn)
+          .then((response) => {
+            console.log('Disc updated:', response.data);
+            // Refresh the inventory or handle success as needed
+          })
+          .catch((error) => {
+            console.error('Error updating disc:', error);
+            // Handle error or display an error message
+          });
+      }
+      setEditedDisc(null);
+      setEditedDiscID(-1);
+    };
+
+    const handleSort = (event: SelectChangeEvent<string>) => {
+      const selectedOption = event.target.value as keyof Disc;
+      console.log('Selected Option:', selectedOption);
+      setSortOption(selectedOption);
+    };
+    
+    const handleSortDirectionChange = (event: SelectChangeEvent<string>) => {
+      const selectedDirection = event.target.value as 'asc' | 'desc';
+      console.log('Selected Direction:', selectedDirection);
+      setSortDirection(selectedDirection);
+    };
+    
 
   return (
     <div className="page-container"> 
       <div className="col-center">
         {/* <h1>Inventory</h1> */}
-        {/* <div className="search-bar"> */}
-          <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', marginTop: "5px", width: 300 }}>
+        <div className="row">
+          <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: 300 }}>
             <InputBase
               sx={{ ml: 1, flex: 1 }}
               placeholder="Search by phone number, disc, or name"
@@ -133,7 +158,25 @@ function Inventory() {
               <SearchIcon />
             </IconButton>
           </Paper>
-        {/* </div> */}
+          <div className="sort-options">
+            <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
+              <InputLabel>Sort By</InputLabel>
+              <Select value={sortOption} onChange={handleSort}>
+                <MenuItem value="dateFound">Date Found</MenuItem>
+                <MenuItem value="name">Name</MenuItem>
+                <MenuItem value="pickupDeadline">Pickup Deadline</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
+              <InputLabel>Sort Direction</InputLabel>
+              <Select value={sortDirection} onChange={handleSortDirectionChange}>
+                <MenuItem value="asc">Ascending</MenuItem>
+                <MenuItem value="desc">Descending</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
     </div>
     <div className="container">
       <table className="inventory-table"> 
