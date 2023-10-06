@@ -3,10 +3,12 @@ import axios from 'axios';
 import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
 import { DateTime } from 'luxon';
-import { CircularProgress, TextField } from '@mui/material';
+import { CircularProgress, Divider, IconButton, InputBase, Paper, TextField } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditDialog from './EditDialog';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+
 
 // Define a type for row IDs, assuming it's a number
 type RowId = number;
@@ -118,16 +120,22 @@ function Inventory() {
     <div className="page-container"> 
       <div className="col-center">
         {/* <h1>Inventory</h1> */}
-        <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by phone number, disc, or name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-      
+        {/* <div className="search-bar"> */}
+          <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', marginTop: "5px", width: 300 }}>
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Search by phone number, disc, or name"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery}
+              type="text"
+            />
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        {/* </div> */}
     </div>
+    <div className="container">
       <table className="inventory-table"> 
         <thead>
           <tr>
@@ -156,7 +164,7 @@ function Inventory() {
                 {isLoading ? (
                 <div><CircularProgress/></div>
                 ) : (
-                    <div className="row">
+                    <div>
                       
                         {disc.id!==claimedDisc && <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>Mark as Claimed</button>}
                     </div>
@@ -487,6 +495,7 @@ function Inventory() {
           ))}
         </tbody> */}
       </table>
+    </div>
     </div>
   );
 }

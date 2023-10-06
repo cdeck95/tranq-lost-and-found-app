@@ -23,8 +23,8 @@ export interface Disc {
   pickupDeadline?: string | null;
 }
 
-export const API_BASE_URL = 'https://lost-and-found-api-gl8z.onrender.com'; //production URL
-//export const API_BASE_URL = 'http://127.0.0.1:3001'; // local testing
+//export const API_BASE_URL = 'https://lost-and-found-api-gl8z.onrender.com'; //production URL
+export const API_BASE_URL = 'http://127.0.0.1:3001'; // local testing
 
 
 function App() {
@@ -58,7 +58,7 @@ function App() {
           </ButtonGroup>
         </nav>
       </header>
-      <main>
+      <main className="container">
         {activeTab === 'enterLostDisc' && <EnterLostDisc />}
         {activeTab === 'inventory' && <Inventory />}
       </main>

@@ -9,19 +9,19 @@
   background-color: #f2f2f2;
   font-weight: bold;
   padding: 8px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
 /* Styles for the table cells */
 .table-cell {
   padding: 8px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
 .page-container {
-  padding: 1%;
+  margin: auto;
   width: 100%;
   height: 100%;
   display: flex;
