@@ -83,51 +83,6 @@ function PublicInventory() {
       });
   }, [searchQuery]);
 
-  const markAsClaimed = (discId: string) => {
-    setIsLoading(true); // Set loading state to true
-  
-    axios.put(`${API_BASE_URL}/api/mark-claimed/${discId}`)
-      .then((response) => {
-        console.log('Disc marked as claimed:', response.data);
-        setIsLoading(false); // Set loading state to false
-        setSuccessMessage('Disc claimed successfully'); // Set success message
-        setClaimedDisc(parseInt(discId)); // Set claimedDisc to the ID of the disc being marked as claimed
-      })
-      .catch((error) => {
-        console.error('Error marking disc as claimed:', error);
-        setIsLoading(false); // Set loading state to false in case of an error
-        setSuccessMessage('Error marking disc as claimed'); // Set error message
-      });
-  };
-
-  const [editedDiscID, setEditedDiscID] = useState<number>(-1);
-  const [editedDisc, setEditedDisc] = useState<Disc | null>(null);
-
-  const startEditing = (disc: Disc) => {
-    setEditedDisc(disc);
-    setEditedDiscID(disc.id!);
-  };
-
-  const stopEditing = () => {
-    saveEditedDisc(editedDisc!);
-  };
-
-  const saveEditedDisc = (editedDiscIn: Disc) => {
-    if (editedDiscIn) {
-      axios.put(`${API_BASE_URL}/api/edit-disc/${editedDiscIn.id}`, editedDiscIn)
-        .then((response) => {
-          console.log('Disc updated:', response.data);
-          // Refresh the inventory or handle success as needed
-        })
-        .catch((error) => {
-          console.error('Error updating disc:', error);
-          // Handle error or display an error message
-        });
-    }
-    setEditedDisc(null);
-    setEditedDiscID(-1);
-  };
-
   return (
     <div className="page-container"> 
       <div className="col-center">
@@ -189,190 +144,19 @@ function PublicInventory() {
                 <tr>
                   <td colSpan={8}> {/* Use appropriate colspan */}
                     <div>
-                      {/* Display all fields related to the disc here */}
-                      {editedDiscID===disc.id
-                      ? <SaveOutlinedIcon sx={{ cursor: "pointer", marginRight: "10px"}} onClick={stopEditing}></SaveOutlinedIcon>
-                      : <EditOutlinedIcon sx={{ cursor: "pointer"}} onClick={() => startEditing(disc)}></EditOutlinedIcon>
-                      }
                       <p><strong>ID:</strong> {disc.id}</p>
                       <p><strong>Course: </strong>{disc.course}</p>
-                      <div>
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                          id="outlined-uncontrolled"
-                          sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                          label="Name"
-                          defaultValue={disc.name}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.name = e.target.value;
-                              setEditedDisc({ ...disc, name: e.target.value });
-                            }}
-                        />
-                        ) : (
-                          <p><strong>Name: </strong>{disc.name}</p>
-                        )}
-                      </div>
-                      <div>
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                          id="outlined-uncontrolled"
-                          sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                          label="Phone Number"
-                          defaultValue={maskPhoneNumber(disc.phoneNumber)}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            disc.phoneNumber = e.target.value;
-                              setEditedDisc({ ...disc, phoneNumber: e.target.value });
-                            }}
-                        />
-                        ) : (
-                          <p><strong>Phone Number: </strong>{maskPhoneNumber(disc.phoneNumber)}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Disc Name"
-                            defaultValue={disc.disc}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.disc = e.target.value;
-                              setEditedDisc({ ...disc, disc: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Disc: </strong>{disc.disc}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Color"
-                            defaultValue={disc.color}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.color = e.target.value;
-                              setEditedDisc({ ...disc, color: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Color: </strong>{disc.color}</p>
-                        )}
-                      </div>
-                      <div>
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                          id="outlined-uncontrolled"
-                          sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                          label="Bin"
-                          defaultValue={disc.bin}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            disc.bin = e.target.value;
-                            setEditedDisc({ ...disc, bin: e.target.value });
-                            }}
-                        />
-                        ) : (
-                          <p><strong>Bin: </strong>{disc.bin}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Date Found"
-                            defaultValue={disc.dateFound}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.dateFound = e.target.value;
-                              setEditedDisc({ ...disc, dateFound: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Date Found: </strong>{disc.dateFound}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Date Texted"
-                            defaultValue={disc.dateTexted}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.dateTexted = e.target.value;
-                              setEditedDisc({ ...disc, dateTexted: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Date Texted: </strong>{disc.dateTexted}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Date Claimed"
-                            defaultValue={disc.dateClaimed}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.dateClaimed = e.target.value;
-                              setEditedDisc({ ...disc, dateClaimed: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Date Claimed: </strong>{disc.dateClaimed}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Status"
-                            defaultValue={disc.status}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.status = e.target.value;
-                              setEditedDisc({ ...disc, status: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Status: </strong>{disc.status}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Pickup Deadline"
-                            defaultValue={disc.pickupDeadline}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.pickupDeadline = e.target.value;
-                              setEditedDisc({ ...disc, pickupDeadline: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Pickup Deadline: </strong>{disc.pickupDeadline}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Comments"
-                            defaultValue={disc.comments}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.comments = e.target.value;
-                              setEditedDisc({ ...disc, comments: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Comments: </strong>{disc.comments}</p>
-                        )}
-                      </div>
-                      
+                      <p><strong>Name: </strong>{disc.name}</p>
+                      <p><strong>Phone Number: </strong>{maskPhoneNumber(disc.phoneNumber)}</p>
+                      <p><strong>Disc: </strong>{disc.disc}</p>
+                      <p><strong>Color: </strong>{disc.color}</p>
+                      <p><strong>Bin: </strong>{disc.bin}</p>
+                      <p><strong>Date Found: </strong>{disc.dateFound}</p>
+                      <p><strong>Date Texted: </strong>{disc.dateTexted}</p>
+                      <p><strong>Date Claimed: </strong>{disc.dateClaimed}</p>
+                      <p><strong>Status: </strong>{disc.status}</p>
+                      <p><strong>Pickup Deadline: </strong>{disc.pickupDeadline}</p>
+                      <p><strong>Comments: </strong>{disc.comments}</p>
                     </div>
                   </td>
                 </tr>
