@@ -274,8 +274,11 @@ function Inventory() {
                       // Check if the pickup deadline is in the past
                       //THIS ISNT WORKING YET
                       new Date(disc.pickupDeadline!) < new Date() ? (
-                        <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
-                          Mark as $5 Box
+                        // <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
+                        //   Move to $5 Box
+                        // </button>
+                        <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
+                          Mark as Claimed
                         </button>
                       ) : (
                         <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
