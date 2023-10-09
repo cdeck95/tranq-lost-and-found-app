@@ -28,6 +28,9 @@ function PublicInventory() {
     const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
     const isMediumLarge = useMediaQuery(theme.breakpoints.down("lg"));
     const isLarge = useMediaQuery(theme.breakpoints.down("xl"));
+
+    const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
+
     
     // const [showTooltip, setShowTooltip] = useState(false);
 
@@ -130,7 +133,6 @@ function PublicInventory() {
             <th className="table-header">Name</th> 
             <th className="table-header">Phone Number</th> 
             <th className="table-header">Disc</th> 
-            <th className="table-header"></th> 
             {/* <th className="table-header">Color</th> 
             <th className="table-header">Bin</th> 
             <th className="table-header">Date Found</th> 
@@ -147,13 +149,6 @@ function PublicInventory() {
                 <td className="table-cell">{disc.name}</td>
                 <td className="table-cell">{maskPhoneNumber(disc.phoneNumber)}</td>
                 <td className="table-cell">{disc.disc}</td>
-                <td className="table-cell">
-                <Tooltip title="Instructions on how to pick up the disc">
-                  <IconButton aria-label="help">
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
-                </td>
                 {/* <td className="table-cell"></td> */}
               </tr>
               {/* Additional details row */}
