@@ -29,9 +29,7 @@ function Inventory() {
     const [showPastDeadlines, setShowPastDeadlines] = useState(false);
     const theme = useTheme();
     const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
-    const isMediumLarge = useMediaQuery(theme.breakpoints.down("lg"));
-    const isLarge = useMediaQuery(theme.breakpoints.down("xl"));
-
+    
     const toggleRow = (rowId: RowId) => {
       if (expandedRows.includes(rowId)) {
         setExpandedRows(expandedRows.filter((id) => id !== rowId));

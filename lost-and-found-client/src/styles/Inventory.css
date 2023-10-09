@@ -103,5 +103,35 @@
   width: 100%;
 }
 
+/* Style for the password form container */
+#password-form {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Style for the password text */
+.password-text {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Style for the "Enter Password" button */
+.green-button {
+  background-color: #006e52; /* Green background color */
+  color: white; /* White text color */
+  padding: 10px 20px; /* Add padding to the button */
+  font-size: 16px; /* Button text size */
+  border: none; /* Remove button border */
+  cursor: pointer; /* Add a pointer cursor on hover */
+  border-radius: 5px; /* Add rounded corners */
+  transition: background-color 0.3s; /* Add a smooth background color transition on hover */
+
+  /* Optional: Add a box shadow on hover for a raised effect */
+  &:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+
 
 
