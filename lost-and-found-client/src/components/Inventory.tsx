@@ -198,8 +198,8 @@ function Inventory() {
         <div className={isMobile? "column" : "row"}>
           <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "300px" : "700px" }}>
             <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Search by phone number, disc, name or comments"
+              sx={{ ml: 1, flex: 1, fontSize: "12px" }}
+              placeholder="Search by disc, name, or last 4 digits of your phone number"
               onChange={(e) => setSearchQuery(e.target.value)}
               value={searchQuery}
               type="text"

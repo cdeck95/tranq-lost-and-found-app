@@ -100,10 +100,10 @@ function PublicInventory() {
       <div className="col-center">
         {/* <h1>Inventory</h1> */}
         {/* <div className="search-bar"> */}
-          <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "300px" : "700px"  }}>
+          <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "320px" : "700px"  }}>
             <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Search by phone number (last 4 digits), disc, or name"
+              sx={{ ml: 1, flex: 1, fontSize: "12px" }}
+              placeholder="Search by disc, name, or last 4 digits of your phone number"
               onChange={(e) => {
                 const inputQuery = e.target.value;
             
