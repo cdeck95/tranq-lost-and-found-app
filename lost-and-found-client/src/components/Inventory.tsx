@@ -3,13 +3,14 @@ import axios from 'axios';
 import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
 import { DateTime } from 'luxon';
-import { CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField, useMediaQuery, useTheme } from '@mui/material';
+import { Box, CircularProgress, Divider, FormControl, FormControlLabel, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, TextField, useMediaQuery, useTheme } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EditDialog from './EditDialog';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { SelectChangeEvent } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
+import BackToTopButton from './BackToTopButton';
 
 
 // Define a type for row IDs, assuming it's a number
@@ -196,7 +197,7 @@ function Inventory() {
     <div className="page-container"> 
       <div className="col-center">
         {/* <h1>Inventory</h1> */}
-        <div className="row">
+        <div className={isMobile? "column" : "row"}>
           <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "300px" : "700px" }}>
             <InputBase
               sx={{ ml: 1, flex: 1 }}
@@ -209,7 +210,7 @@ function Inventory() {
               <SearchIcon />
             </IconButton>
           </Paper>
-          <div className="sort-options">
+          <Box className="sort-options" sx={{ marginTop: isMobile? "15px" : "0px" }}>
             <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
               <InputLabel>Sort By</InputLabel>
               <Select value={sortOption} onChange={handleSort}>
@@ -234,9 +235,9 @@ function Inventory() {
                   color="primary"
                 />
               }
-              label="Show Past Deadlines"
+              label="Show Expired Pickups"
             />
-          </div>
+          </Box>
         </div>
     </div>
     <div className="container">
@@ -483,133 +484,8 @@ function Inventory() {
             </React.Fragment>
           ))}
         </tbody>
-        {/* <tbody>
-            {filteredInventory.map((disc: Disc) => (
-            <tr key={disc.id}>
-              {editedDiscID===disc.id
-              ? <td className="table-cell"><SaveOutlinedIcon sx={{ cursor: "pointer"}} onClick={stopEditing}></SaveOutlinedIcon></td>
-              : <td className="table-cell"><EditOutlinedIcon sx={{ cursor: "pointer"}} onClick={() => startEditing(disc)}></EditOutlinedIcon></td>
-              }
-              <td className="table-cell">{disc.id}</td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="text"
-                    value={disc.name}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.name = e.target.value;
-                      setEditedDisc({ ...disc, name: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.name
-                )}
-              </td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="number"
-                    value={disc.phoneNumber}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.phoneNumber = e.target.value;
-                      setEditedDisc({ ...disc, phoneNumber: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.phoneNumber // Display text when not editing
-                )}
-              </td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="text"
-                    value={disc.disc}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.disc = e.target.value;
-                      setEditedDisc({ ...disc, disc: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.disc // Display text when not editing
-                )}
-              </td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="text"
-                    value={disc.color}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.color = e.target.value;
-                      setEditedDisc({ ...disc, color: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.color // Display text when not editing
-                )}
-              </td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="text"
-                    value={disc.bin}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.bin = e.target.value;
-                      setEditedDisc({ ...disc, bin: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.bin // Display text when not editing
-                )}
-              </td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="date"
-                    value={disc.dateFound}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.dateFound = e.target.value;
-                      setEditedDisc({ ...disc, dateFound: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.dateFound // Display text when not editing
-                )}
-              </td>
-              <td className="table-cell">
-                {editedDiscID === disc.id ? (
-                  <input
-                    type="text"
-                    value={disc.comments!}
-                    style={{ width: '90%' }}
-                    onChange={(e) => {
-                      disc.comments = e.target.value;
-                      setEditedDisc({ ...disc, comments: e.target.value });
-                    }}
-                  />
-                ) : (
-                  disc.comments // Display text when not editing
-                )}
-              </td>
-              <td className="table-cell">
-                {isLoading ? (
-                <div><CircularProgress/></div>
-                ) : (
-                    <div>
-                        {disc.id!==claimedDisc && <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>Mark as Claimed</button>}
-                    </div>
-                    )}
-                {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
-              </td>
-            </tr>
-          ))}
-        </tbody> */}
       </table>
+      <BackToTopButton />
     </div>
     </div>
   );
