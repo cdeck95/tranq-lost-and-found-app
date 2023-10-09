@@ -11,9 +11,9 @@ function BackToTopButton() {
 
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
-    const isScrollingDown = currentScrollPos > prevScrollPos;
+    //const isScrollingDown = currentScrollPos > prevScrollPos;
 
-    if (isScrollingDown && currentScrollPos >= SCROLL_THRESHOLD) {
+    if (currentScrollPos >= SCROLL_THRESHOLD) {
       setIsVisible(true);
     } else {
       setIsVisible(false);
@@ -52,5 +52,6 @@ function BackToTopButton() {
     </div>
   );
 }
+
 
 export default BackToTopButton;

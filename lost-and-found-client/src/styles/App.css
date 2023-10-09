@@ -71,12 +71,36 @@
   height: 100%;
 }
 
+
+/* Style for the container div */
+.back-to-top-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  opacity: 0;
+  transition: opacity 0.5s; /* Add a smooth opacity transition */
+}
+
+/* Style for the visible state */
+.visible {
+  opacity: 1; /* Make the button visible */
+}
+
+/* Style for the hidden state */
+/* You can customize this as needed */
+.visible.hidden {
+  opacity: 0;
+  pointer-events: none; /* Disable pointer events to make the button unclickable when hidden */
+}
+
 /* BackToTopButton.css */
 .fab-button {
   background-color: #007bff; /* Button background color */
   color: white; /* Button text color */
-  &:hover {
-    background-color: #0056b3; /* Hover background color */
-  }
+  
+}
+
+.fab-button:hover {
+  background-color: #0056b3; /* Hover background color */
 }
 
