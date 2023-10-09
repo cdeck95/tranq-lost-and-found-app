@@ -71,3 +71,12 @@
   height: 100%;
 }
 
+/* BackToTopButton.css */
+.fab-button {
+  background-color: #007bff; /* Button background color */
+  color: white; /* Button text color */
+  &:hover {
+    background-color: #0056b3; /* Hover background color */
+  }
+}
+

@@ -9,6 +9,9 @@ import EditDialog from './EditDialog';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from "@mui/material";
+import Tooltip from '@mui/material/Tooltip';
+import InfoIcon from '@mui/icons-material/Info';
+import BackToTopButton from './BackToTopButton';
 
 
 // Define a type for row IDs, assuming it's a number
@@ -25,6 +28,20 @@ function PublicInventory() {
     const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
     const isMediumLarge = useMediaQuery(theme.breakpoints.down("lg"));
     const isLarge = useMediaQuery(theme.breakpoints.down("xl"));
+    
+    const initialTooltipState: { [key: number]: boolean } = {};
+    filteredInventory.forEach((disc: Disc) => {
+      initialTooltipState[disc.id!] = false;
+    });
+
+    const [tooltipState, setTooltipState] = useState(initialTooltipState);
+
+    const toggleTooltip = (discId: number) => {
+      setTooltipState((prevState) => ({
+        ...prevState,
+        [discId]: !prevState[discId],
+      }));
+    };
 
   const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
 
@@ -137,6 +154,27 @@ function PublicInventory() {
                 <td className="table-cell">{disc.name}</td>
                 <td className="table-cell">{maskPhoneNumber(disc.phoneNumber)}</td>
                 <td className="table-cell">{disc.disc}</td>
+                {/* <td className="table-cell">
+                  <Tooltip
+                      title="Instructions on how to pick up the disc"
+                      open={tooltipState[disc.id!]}
+                      onClose={() => toggleTooltip(disc.id!)}
+                      disableFocusListener={!tooltipState[disc.id!]}
+                      disableHoverListener={!tooltipState[disc.id!]}
+                    >
+                      <IconButton
+                        aria-label="help"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click event
+                          toggleTooltip(disc.id!); // Toggle the tooltip for this disc
+                        }}
+                        onMouseEnter={() => toggleTooltip(disc.id!)}
+                        onMouseLeave={() => toggleTooltip(disc.id!)}
+                      >
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
+                </td> */}
                 {/* <td className="table-cell"></td> */}
               </tr>
               {/* Additional details row */}
@@ -291,6 +329,7 @@ function PublicInventory() {
           ))}
         </tbody> */}
       </table>
+      <BackToTopButton />
     </div>
     </div>
   );
