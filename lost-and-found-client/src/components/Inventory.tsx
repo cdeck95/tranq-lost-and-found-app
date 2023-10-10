@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL, Disc } from '../App';
 import '../styles/Inventory.css'; // Import the CSS file
@@ -11,6 +11,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { SelectChangeEvent } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import BackToTopButton from './BackToTopButton';
+import PullToRefresh from 'react-simple-pull-to-refresh';
+
 
 
 // Define a type for row IDs, assuming it's a number
@@ -29,6 +31,16 @@ function Inventory() {
     const [showPastDeadlines, setShowPastDeadlines] = useState(false);
     const theme = useTheme();
     const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
+    const [refreshing, setRefreshing] = useState(false);
+
+    // const handleRefresh = useCallback(() => {
+    //   getInventory();
+    //   setRefreshing(false);
+    // }, []);
+
+    const handleRefresh = async () => {
+      getInventory();
+    }
     
     const toggleRow = (rowId: RowId) => {
       if (expandedRows.includes(rowId)) {
@@ -47,7 +59,7 @@ function Inventory() {
       return dateUTC.toFormat('yyyy-MM-dd');
     };
 
-    useEffect(() => {
+    const getInventory = () => {
       axios.get(`${API_BASE_URL}/api/inventory`)
         .then((response) => {
           // Convert UTC timestamps to EST
@@ -102,6 +114,10 @@ function Inventory() {
         .catch((error) => {
           console.error('Error fetching inventory:', error);
         });
+      };
+
+    useEffect(() => {
+      getInventory();
     }, [searchQuery, showPastDeadlines, sortDirection, sortOption]);
 
     const markAsClaimed = (discId: string) => {
@@ -188,302 +204,304 @@ function Inventory() {
     
 
   return (
-    <div className="page-container"> 
-      <div className="col-center">
-        {/* <h1>Inventory</h1> */}
-        <div className={isMobile? "column" : "row"}>
-          <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "300px" : "700px" }}>
-            <InputBase
-              sx={{ ml: 1, flex: 1, fontSize: "12px" }}
-              placeholder="Search by disc, name, or last 4 digits of your phone number"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              value={searchQuery}
-              type="text"
-            />
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-          <Box className="sort-options" sx={{ marginTop: isMobile? "15px" : "0px" }}>
-            <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
-              <InputLabel>Sort By</InputLabel>
-              <Select value={sortOption} onChange={handleSort}>
-                <MenuItem value="dateFound">Date Found</MenuItem>
-                <MenuItem value="name">Name</MenuItem>
-                <MenuItem value="pickupDeadline">Pickup Deadline</MenuItem>
-              </Select>
-            </FormControl>
+    <PullToRefresh className="ptr-override" onRefresh={handleRefresh}> 
+      <div className="page-container"> 
+        <div className="col-center">
+          {/* <h1>Inventory</h1> */}
+          <div className={isMobile? "column" : "row"}>
+            <Paper component="form" sx={{ p: '2px 4px', marginRight: "15px", marginLeft: "15px", display: 'flex', alignItems: 'center', marginTop: "5px", width: isMobile? "300px" : "700px" }}>
+              <InputBase
+                sx={{ ml: 1, flex: 1, fontSize: "12px" }}
+                placeholder="Search by disc, name, or last 4 digits of your phone number"
+                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
+                type="text"
+              />
+              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                <SearchIcon />
+              </IconButton>
+            </Paper>
+            <Box className="sort-options" sx={{ marginTop: isMobile? "15px" : "0px" }}>
+              <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
+                <InputLabel>Sort By</InputLabel>
+                <Select value={sortOption} onChange={handleSort}>
+                  <MenuItem value="dateFound">Date Found</MenuItem>
+                  <MenuItem value="name">Name</MenuItem>
+                  <MenuItem value="pickupDeadline">Pickup Deadline</MenuItem>
+                </Select>
+              </FormControl>
 
-            <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
-              <InputLabel>Sort Direction</InputLabel>
-              <Select value={sortDirection} onChange={handleSortDirectionChange}>
-                <MenuItem value="asc">Ascending</MenuItem>
-                <MenuItem value="desc">Descending</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showPastDeadlines}
-                  onChange={toggleShowPastDeadlines}
-                  color="primary"
-                />
-              }
-              label="Show Expired Pickups"
-            />
-          </Box>
+              <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
+                <InputLabel>Sort Direction</InputLabel>
+                <Select value={sortDirection} onChange={handleSortDirectionChange}>
+                  <MenuItem value="asc">Ascending</MenuItem>
+                  <MenuItem value="desc">Descending</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={showPastDeadlines}
+                    onChange={toggleShowPastDeadlines}
+                    color="primary"
+                  />
+                }
+                label="Show Expired Pickups"
+              />
+            </Box>
+          </div>
         </div>
-    </div>
-    <div className="container">
-      <table className="inventory-table"> 
-        <thead>
-          <tr>
-            <th className="table-header"> </th>
-            {/* <th className="table-header">ID</th>  */}
-            <th className="table-header">Name</th> 
-            <th className="table-header">Phone Number</th> 
-            <th className="table-header">Disc</th> 
-            {/* <th className="table-header">Color</th> 
-            <th className="table-header">Bin</th> 
-            <th className="table-header">Date Found</th> 
-            <th className="table-header">Comments</th>  */}
-            <th className="table-header">Actions</th> 
-          </tr>
-        </thead>
-        <tbody>
-          {filteredInventory.map((disc) => (
-            <React.Fragment key={disc.id}>
-              <tr onClick={() => toggleRow(disc.id!)}>
-                <td className="table-cell">{expandedRows.includes(disc.id!) ? '▼' : '▶'}</td>
-                {/* <td className="table-cell">{disc.id}</td> */}
-                <td className="table-cell">{disc.name}</td>
-                <td className="table-cell">{disc.phoneNumber}</td>
-                <td className="table-cell">{disc.disc}</td>
-                <td className="table-cell">
-                {isLoading ? (
-                <div><CircularProgress/></div>
-                ) : (
-                  <div>
-                    {disc.id !== claimedDisc ? (
-                      // Check if the pickup deadline is in the past
-                      new Date(disc.pickupDeadline!) < new Date() ? (
-                        <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
-                          Move to $5 Box
-                        </button>
-                        // <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
-                        //   Mark as Claimed
-                        // </button>
-                      ) : (
-                        <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
-                          Mark as Claimed
-                        </button>
-                      )
-                    ) : null}
-                  </div>
-                )}
-                {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
-              </td>
+        <div className="container">
+          <table className="inventory-table"> 
+            <thead>
+              <tr>
+                <th className="table-header"> </th>
+                {/* <th className="table-header">ID</th>  */}
+                <th className="table-header">Name</th> 
+                <th className="table-header">Phone Number</th> 
+                <th className="table-header">Disc</th> 
+                {/* <th className="table-header">Color</th> 
+                <th className="table-header">Bin</th> 
+                <th className="table-header">Date Found</th> 
+                <th className="table-header">Comments</th>  */}
+                <th className="table-header">Actions</th> 
               </tr>
-              {/* Additional details row */}
-              {expandedRows.includes(disc.id!) && (
-                <tr>
-                  <td colSpan={8}> {/* Use appropriate colspan */}
-                    <div>
-                      {/* Display all fields related to the disc here */}
-                      {editedDiscID===disc.id
-                      ? <SaveOutlinedIcon sx={{ cursor: "pointer", marginRight: "10px"}} onClick={stopEditing}></SaveOutlinedIcon>
-                      : <EditOutlinedIcon sx={{ cursor: "pointer"}} onClick={() => startEditing(disc)}></EditOutlinedIcon>
-                      }
-                      <p><strong>ID:</strong> {disc.id}</p>
-                      <p><strong>Course: </strong>{disc.course}</p>
+            </thead>
+            <tbody>
+              {filteredInventory.map((disc) => (
+                <React.Fragment key={disc.id}>
+                  <tr onClick={() => toggleRow(disc.id!)}>
+                    <td className="table-cell">{expandedRows.includes(disc.id!) ? '▼' : '▶'}</td>
+                    {/* <td className="table-cell">{disc.id}</td> */}
+                    <td className="table-cell">{disc.name}</td>
+                    <td className="table-cell">{disc.phoneNumber}</td>
+                    <td className="table-cell">{disc.disc}</td>
+                    <td className="table-cell">
+                    {isLoading ? (
+                    <div><CircularProgress/></div>
+                    ) : (
                       <div>
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                          id="outlined-uncontrolled"
-                          sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                          label="Name"
-                          defaultValue={disc.name}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.name = e.target.value;
-                              setEditedDisc({ ...disc, name: e.target.value });
-                            }}
-                        />
-                        ) : (
-                          <p><strong>Name: </strong>{disc.name}</p>
-                        )}
+                        {disc.id !== claimedDisc ? (
+                          // Check if the pickup deadline is in the past
+                          new Date(disc.pickupDeadline!) < new Date() ? (
+                            <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
+                              Move to $5 Box
+                            </button>
+                            // <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
+                            //   Mark as Claimed
+                            // </button>
+                          ) : (
+                            <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
+                              Mark as Claimed
+                            </button>
+                          )
+                        ) : null}
                       </div>
-                      <div>
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                          id="outlined-uncontrolled"
-                          sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                          label="Phone Number"
-                          defaultValue={disc.phoneNumber}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            disc.phoneNumber = e.target.value;
-                              setEditedDisc({ ...disc, phoneNumber: e.target.value });
-                            }}
-                        />
-                        ) : (
-                          <p><strong>Phone Number: </strong>{disc.phoneNumber}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Disc Name"
-                            defaultValue={disc.disc}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.disc = e.target.value;
-                              setEditedDisc({ ...disc, disc: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Disc: </strong>{disc.disc}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Color"
-                            defaultValue={disc.color}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.color = e.target.value;
-                              setEditedDisc({ ...disc, color: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Color: </strong>{disc.color}</p>
-                        )}
-                      </div>
-                      <div>
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                          id="outlined-uncontrolled"
-                          sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                          label="Bin"
-                          defaultValue={disc.bin}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            disc.bin = e.target.value;
-                            setEditedDisc({ ...disc, bin: e.target.value });
-                            }}
-                        />
-                        ) : (
-                          <p><strong>Bin: </strong>{disc.bin}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Date Found"
-                            defaultValue={disc.dateFound}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.dateFound = e.target.value;
-                              setEditedDisc({ ...disc, dateFound: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Date Found: </strong>{disc.dateFound}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Date Texted"
-                            defaultValue={disc.dateTexted}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.dateTexted = e.target.value;
-                              setEditedDisc({ ...disc, dateTexted: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Date Texted: </strong>{disc.dateTexted}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Date Claimed"
-                            defaultValue={disc.dateClaimed}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.dateClaimed = e.target.value;
-                              setEditedDisc({ ...disc, dateClaimed: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Date Claimed: </strong>{disc.dateClaimed}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Status"
-                            defaultValue={disc.status}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.status = e.target.value;
-                              setEditedDisc({ ...disc, status: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Status: </strong>{disc.status}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Pickup Deadline"
-                            defaultValue={disc.pickupDeadline}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.pickupDeadline = e.target.value;
-                              setEditedDisc({ ...disc, pickupDeadline: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Pickup Deadline: </strong>{disc.pickupDeadline}</p>
-                        )}
-                      </div>
-                      <div className="row">
-                        {editedDiscID === disc.id ? (
-                          <TextField
-                            id="outlined-uncontrolled"
-                            sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                            label="Comments"
-                            defaultValue={disc.comments}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              disc.comments = e.target.value;
-                              setEditedDisc({ ...disc, comments: e.target.value });
-                              }}
-                          />
-                        ) : (
-                          <p><strong>Comments: </strong>{disc.comments}</p>
-                        )}
-                      </div>
-                      
-                    </div>
+                    )}
+                    {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
                   </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
-      <BackToTopButton />
-    </div>
-    </div>
+                  </tr>
+                  {/* Additional details row */}
+                  {expandedRows.includes(disc.id!) && (
+                    <tr>
+                      <td colSpan={8}> {/* Use appropriate colspan */}
+                        <div>
+                          {/* Display all fields related to the disc here */}
+                          {editedDiscID===disc.id
+                          ? <SaveOutlinedIcon sx={{ cursor: "pointer", marginRight: "10px"}} onClick={stopEditing}></SaveOutlinedIcon>
+                          : <EditOutlinedIcon sx={{ cursor: "pointer"}} onClick={() => startEditing(disc)}></EditOutlinedIcon>
+                          }
+                          <p><strong>ID:</strong> {disc.id}</p>
+                          <p><strong>Course: </strong>{disc.course}</p>
+                          <div>
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                              id="outlined-uncontrolled"
+                              sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                              label="Name"
+                              defaultValue={disc.name}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.name = e.target.value;
+                                  setEditedDisc({ ...disc, name: e.target.value });
+                                }}
+                            />
+                            ) : (
+                              <p><strong>Name: </strong>{disc.name}</p>
+                            )}
+                          </div>
+                          <div>
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                              id="outlined-uncontrolled"
+                              sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                              label="Phone Number"
+                              defaultValue={disc.phoneNumber}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                disc.phoneNumber = e.target.value;
+                                  setEditedDisc({ ...disc, phoneNumber: e.target.value });
+                                }}
+                            />
+                            ) : (
+                              <p><strong>Phone Number: </strong>{disc.phoneNumber}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Disc Name"
+                                defaultValue={disc.disc}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.disc = e.target.value;
+                                  setEditedDisc({ ...disc, disc: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Disc: </strong>{disc.disc}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Color"
+                                defaultValue={disc.color}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.color = e.target.value;
+                                  setEditedDisc({ ...disc, color: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Color: </strong>{disc.color}</p>
+                            )}
+                          </div>
+                          <div>
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                              id="outlined-uncontrolled"
+                              sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                              label="Bin"
+                              defaultValue={disc.bin}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                disc.bin = e.target.value;
+                                setEditedDisc({ ...disc, bin: e.target.value });
+                                }}
+                            />
+                            ) : (
+                              <p><strong>Bin: </strong>{disc.bin}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Date Found"
+                                defaultValue={disc.dateFound}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.dateFound = e.target.value;
+                                  setEditedDisc({ ...disc, dateFound: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Date Found: </strong>{disc.dateFound}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Date Texted"
+                                defaultValue={disc.dateTexted}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.dateTexted = e.target.value;
+                                  setEditedDisc({ ...disc, dateTexted: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Date Texted: </strong>{disc.dateTexted}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Date Claimed"
+                                defaultValue={disc.dateClaimed}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.dateClaimed = e.target.value;
+                                  setEditedDisc({ ...disc, dateClaimed: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Date Claimed: </strong>{disc.dateClaimed}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Status"
+                                defaultValue={disc.status}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.status = e.target.value;
+                                  setEditedDisc({ ...disc, status: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Status: </strong>{disc.status}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Pickup Deadline"
+                                defaultValue={disc.pickupDeadline}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.pickupDeadline = e.target.value;
+                                  setEditedDisc({ ...disc, pickupDeadline: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Pickup Deadline: </strong>{disc.pickupDeadline}</p>
+                            )}
+                          </div>
+                          <div className="row">
+                            {editedDiscID === disc.id ? (
+                              <TextField
+                                id="outlined-uncontrolled"
+                                sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
+                                label="Comments"
+                                defaultValue={disc.comments}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  disc.comments = e.target.value;
+                                  setEditedDisc({ ...disc, comments: e.target.value });
+                                  }}
+                              />
+                            ) : (
+                              <p><strong>Comments: </strong>{disc.comments}</p>
+                            )}
+                          </div>
+                          
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+          <BackToTopButton />
+        </div>
+      </div>
+    </PullToRefresh>
   );
 }
 
