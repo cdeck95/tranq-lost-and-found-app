@@ -30,7 +30,7 @@ function PublicHub() {
               color={activeTab === 'faq' ? "primary" : "inherit"}
               className={activeTab === 'faq' ? 'active' : ''}
             >
-              FAQ
+              FAQ Page
             </Button>
             <Button
               onClick={() => switchTab('inventory')}
