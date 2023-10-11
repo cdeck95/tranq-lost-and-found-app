@@ -31,7 +31,7 @@ function AdminPanel() {
   return (
     <div className="App">
       <header className="App-header">
-        <Typography sx={{ color: 'white', fontSize: isMobile? "2rem" : "3rem"}}>Tranquility Trails Lost and Found</Typography>
+        <Typography sx={{ color: 'white', fontSize: isMobile? "2rem" : "3rem", marginBottom: "10px"}}>Tranquility Trails Lost and Found</Typography>
         <nav>
           <ButtonGroup variant="contained" color="primary">
             <Button
@@ -48,13 +48,6 @@ function AdminPanel() {
             >
               Inventory
             </Button>
-            {/* <Button
-              onClick={() => switchTab('expired')}
-              color={activeTab === 'expired' ? "primary" : "inherit"}
-              className={activeTab === 'expired' ? 'active' : ''}
-            >
-              Expired Pickups
-            </Button> */}
           </ButtonGroup>
         </nav>
       </header>
