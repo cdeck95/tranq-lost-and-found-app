@@ -44,7 +44,7 @@ const FAQData: FAQItem[] = [
   {
     question: 'How does a disc appear in the inventory?',
     answer:
-      'Discs are added to the inventory by administrators or staff members. When they find a disc on a disc golf course, they enter the relevant information into the system, including the course, name, disc type, and other details. This makes the disc visible in the inventory.',
+      'Discs are added to the inventory by volunteers when they find a disc on the course or if one is returned in the L&F bin. The volunteer will enter the relevant information about the disc (name, color, plastic) into the system, including any information written on the disc like a persons name and phone number. This makes the disc visible in the inventory.',
   },
   {
     question: 'Can I report my disc as lost?',
