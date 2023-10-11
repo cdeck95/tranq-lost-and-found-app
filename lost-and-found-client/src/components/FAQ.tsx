@@ -47,6 +47,11 @@ const FAQData: FAQItem[] = [
       'Discs are added to the inventory by volunteers when they find a disc on the course or if one is returned in the L&F bin. The volunteer will enter the relevant information about the disc (name, color, plastic) into the system, including any information written on the disc like a persons name and phone number. This makes the disc visible in the inventory.',
   },
   {
+    question: 'How do I know when my disc is added?',
+    answer:
+      'If your disc has a visible phone number written on it, you will be notified via text. Once a day, at 12pm EST, the system sends a text for every new disc added to the inventory.',
+  },
+  {
     question: 'Can I report my disc as lost?',
     answer:
       'At the moment, only administrators have the ability to add discs to the inventory. Self-reporting lost discs is not available. If you believe your disc is lost, it\'s advisable to check the inventory through the app or contact the course staff to inquire if it has been found.',
