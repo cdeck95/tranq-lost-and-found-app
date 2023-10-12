@@ -84,7 +84,7 @@ function PublicInventory() {
             return (
               phoneNumberLast4Digits.includes(searchQuery) ||
               disc.disc.includes(searchQuery) ||
-              disc.name.includes(searchQuery) ||
+              maskLastName(disc.name).includes(searchQuery) ||
               disc.comments?.includes(searchQuery)
             );
           });
@@ -94,6 +94,23 @@ function PublicInventory() {
         console.error('Error fetching inventory:', error);
       });
   }, [searchQuery]);
+
+  function maskLastName(name: string): string {
+    // Extract the last name (assuming last names are separated by a space)
+    const names = name.split(' ');
+    if (names.length >= 2) {
+      const firstName = names[0];
+      const lastName = names[names.length - 1];
+  
+      // Check if there is a last name before appending the "."
+      const maskedLastName = `${firstName} ${lastName.charAt(0)}${lastName.length > 1 ? '.' : ''}`;
+      return maskedLastName;
+    }
+    
+    // Return the original name if it doesn't contain a last name
+    return name;
+  }
+  
 
   return (
     <div className="page-container"> 
@@ -146,7 +163,7 @@ function PublicInventory() {
               <tr onClick={() => toggleRow(disc.id!)}>
                 <td className="table-cell">{expandedRows.includes(disc.id!) ? '▼' : '▶'}</td>
                 {/* <td className="table-cell">{disc.id}</td> */}
-                <td className="table-cell">{disc.name}</td>
+                <td className="table-cell">{maskLastName(disc.name)}</td>
                 <td className="table-cell">{maskPhoneNumber(disc.phoneNumber)}</td>
                 <td className="table-cell">{disc.disc}</td>
                 {/* <td className="table-cell"></td> */}
@@ -158,7 +175,7 @@ function PublicInventory() {
                     <div>
                       <p><strong>ID:</strong> {disc.id}</p>
                       <p><strong>Course: </strong>{disc.course}</p>
-                      <p><strong>Name: </strong>{disc.name}</p>
+                      <p><strong>Name: </strong>{maskLastName(disc.name)}</p>
                       <p><strong>Phone Number: </strong>{maskPhoneNumber(disc.phoneNumber)}</p>
                       <p><strong>Disc: </strong>{disc.disc}</p>
                       <p><strong>Color: </strong>{disc.color}</p>
