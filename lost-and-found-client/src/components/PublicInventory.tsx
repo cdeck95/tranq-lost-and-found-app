@@ -74,7 +74,7 @@ function PublicInventory() {
           dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
           pickupDeadline: disc.pickupDeadline ? convertToEST(disc.pickupDeadline) : null,
         }));
-        console.log('Inventory:', convertedInventory);
+        //console.log('Inventory:', convertedInventory);
   
         setInventory(convertedInventory);
   

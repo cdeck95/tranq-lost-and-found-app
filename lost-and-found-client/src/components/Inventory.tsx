@@ -70,7 +70,7 @@ function Inventory() {
             dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
             pickupDeadline: disc.pickupDeadline ? convertToEST(disc.pickupDeadline) : null,
           }));
-          console.log('Inventory:', convertedInventory);
+          //console.log('Inventory:', convertedInventory);
     
           setInventory(convertedInventory);
 
@@ -125,7 +125,7 @@ function Inventory() {
     
       axios.put(`${API_BASE_URL}/api/mark-claimed/${discId}`)
         .then((response) => {
-          console.log('Disc marked as claimed:', response.data);
+          //console.log('Disc marked as claimed:', response.data);
           setIsLoading(false); // Set loading state to false
           setSuccessMessage('Disc claimed successfully'); // Set success message
           setClaimedDisc(parseInt(discId)); // Set claimedDisc to the ID of the disc being marked as claimed
@@ -153,7 +153,7 @@ function Inventory() {
       if (editedDiscIn) {
         axios.put(`${API_BASE_URL}/api/edit-disc/${editedDiscIn.id}`, editedDiscIn)
           .then((response) => {
-            console.log('Disc updated:', response.data);
+            //console.log('Disc updated:', response.data);
             // Refresh the inventory or handle success as needed
           })
           .catch((error) => {
@@ -188,7 +188,7 @@ function Inventory() {
       // Make an API call to mark the disc as a $5 Box
       axios.put(`${API_BASE_URL}/api/change-status/${discId}`) 
         .then((response) => {
-          console.log('Disc marked as $5 Box:', response.data);
+          //console.log('Disc marked as $5 Box:', response.data);
           setIsLoading(false);
           setSuccessMessage('Disc is now in the $5 Box');
           setClaimedDisc(parseInt(discId));
@@ -442,7 +442,7 @@ function Inventory() {
                             )}
                           </div>
                           <div className="row">
-                            {editedDiscID === disc.id ? (
+                            {/* {editedDiscID === disc.id ? (
                               <TextField
                                 id="outlined-uncontrolled"
                                 sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
@@ -453,12 +453,12 @@ function Inventory() {
                                   setEditedDisc({ ...disc, status: e.target.value });
                                   }}
                               />
-                            ) : (
+                            ) : ( */}
                               <p><strong>Status: </strong>{disc.status}</p>
-                            )}
+                             {/* )} */}
                           </div>
                           <div className="row">
-                            {editedDiscID === disc.id ? (
+                            {/* {editedDiscID === disc.id ? (
                               <TextField
                                 id="outlined-uncontrolled"
                                 sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
@@ -469,9 +469,9 @@ function Inventory() {
                                   setEditedDisc({ ...disc, pickupDeadline: e.target.value });
                                   }}
                               />
-                            ) : (
+                            ) : ( */}
                               <p><strong>Pickup Deadline: </strong>{disc.pickupDeadline}</p>
-                            )}
+                            {/* )} */}
                           </div>
                           <div className="row">
                             {editedDiscID === disc.id ? (
