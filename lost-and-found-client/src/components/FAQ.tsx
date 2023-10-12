@@ -7,7 +7,7 @@ interface FAQItem {
 }
 
 function FAQ() {
-  const [expanded, setExpanded] = useState<boolean[]>(Array(FAQData.length).fill(false));
+  const [expanded, setExpanded] = useState<boolean[]>(FAQData.map((_, index) => index === 0));
 
   const toggleAnswer = (index: number) => {
     setExpanded((prev) =>
@@ -70,6 +70,10 @@ const FAQData: FAQItem[] = [
     question: 'How do I pick up my disc?',
     answer:
       'To pick up your disc, contact one of our volunteers via text to coordinate a time to retrieve it. You can reach out to Steve Finger @ 609-280-7999 or Dan Kelly @ 856-628-1436. Alternatively, a decision could be made to leave the disc in a lockbox and provide you with the access code for your convenience, if this is preferred.',
+  },{
+    question: 'What should I do if I\'m unable to collect my disc?',
+    answer:
+      'If you find yourself unable to collect your disc, you have the option to "surrender" it. This means your disc will be placed in our $5 bin, and the proceeds will go towards supporting our course. We\'re also working on incorporating a feature on our website that allows for disc shipping in the near future. If this option interests you, please reach out to one of our volunteers to explore its availability.',
   },
 ];
 
