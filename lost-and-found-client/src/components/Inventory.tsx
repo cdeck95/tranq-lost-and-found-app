@@ -25,8 +25,8 @@ function Inventory() {
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [claimedDisc, setClaimedDisc] = useState<number>(0); // Provide the type 'Disc | null'
-    const [sortOption, setSortOption] = useState<keyof Disc>('dateFound'); // Default sorting option
-    const [sortDirection, setSortDirection] = useState('asc'); // Default sorting direction
+    const [sortOption, setSortOption] = useState<keyof Disc>('pickupDeadline'); // Set initial sort option
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); // Set initial sort direction to DESC
     const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
     const [showPastDeadlines, setShowPastDeadlines] = useState(false);
     const theme = useTheme();
@@ -84,15 +84,7 @@ function Inventory() {
               return bValue.localeCompare(aValue);
             }
           });
-    
-          // // Filter the inventory based on the search query
-          // const filtered = sortedInventory.filter((disc: Disc) =>
-          //   disc.phoneNumber.includes(searchQuery) ||
-          //   disc.disc.includes(searchQuery) ||
-          //   disc.name.includes(searchQuery) ||
-          //   disc.comments?.includes(searchQuery)
-          // );
-    
+      
           // setFilteredInventory(filtered);
           const filteredInventory = sortedInventory.filter((disc: Disc) => {
             const isMatch =
@@ -165,17 +157,17 @@ function Inventory() {
       setEditedDiscID(-1);
     };
 
-    const handleSort = (event: SelectChangeEvent<string>) => {
-      const selectedOption = event.target.value as keyof Disc;
-      console.log('Selected Option:', selectedOption);
-      setSortOption(selectedOption);
-    };
+    // const handleSort = (event: SelectChangeEvent<string>) => {
+    //   const selectedOption = event.target.value as keyof Disc;
+    //   console.log('Selected Option:', selectedOption);
+    //   setSortOption(selectedOption);
+    // };
     
-    const handleSortDirectionChange = (event: SelectChangeEvent<string>) => {
-      const selectedDirection = event.target.value as 'asc' | 'desc';
-      console.log('Selected Direction:', selectedDirection);
-      setSortDirection(selectedDirection);
-    };
+    // const handleSortDirectionChange = (event: SelectChangeEvent<string>) => {
+    //   const selectedDirection = event.target.value as 'asc' | 'desc';
+    //   console.log('Selected Direction:', selectedDirection);
+    //   setSortDirection(selectedDirection);
+    // };
 
     const toggleShowPastDeadlines = () => {
       setShowPastDeadlines(!showPastDeadlines);
@@ -200,6 +192,34 @@ function Inventory() {
         });
     };
     
+
+    const formatPhoneNumber = (phoneNumber: string) => {
+      // Assuming phoneNumber is in the format "1234567890"
+      return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+    };
+
+    const handleSort = (selectedOption: keyof Disc) => {
+      if (selectedOption === sortOption) {
+        // Toggle sort direction
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortDirection('asc'); // Default to ascending if a new option is selected
+      }
+      setSortOption(selectedOption);
+    };
+
+    // Define a function to render the header with sorting indicator
+    const renderColumnHeader = (column: keyof Disc, label: string) => {
+      const isSorted = column === sortOption;
+      const isAscending = sortDirection === 'asc';
+      const arrow = isSorted ? (isAscending ? '▲' : '▼') : null;
+
+      return (
+        <th className="table-header" onClick={() => handleSort(column)}>
+          {label} {arrow}
+        </th>
+      );
+    };
     
     
 
@@ -221,8 +241,8 @@ function Inventory() {
                 <SearchIcon />
               </IconButton>
             </Paper>
-            <Box className="sort-options" sx={{ marginTop: isMobile? "15px" : "0px" }}>
-              <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
+            {/* <Box className="sort-options" sx={{ marginTop: isMobile? "15px" : "0px" }}> */}
+              {/* <FormControl sx={{ marginRight: "15px", marginLeft: "15px"}}>
                 <InputLabel>Sort By</InputLabel>
                 <Select value={sortOption} onChange={handleSort}>
                   <MenuItem value="dateFound">Date Found</MenuItem>
@@ -237,8 +257,8 @@ function Inventory() {
                   <MenuItem value="asc">Ascending</MenuItem>
                   <MenuItem value="desc">Descending</MenuItem>
                 </Select>
-              </FormControl>
-              <FormControlLabel
+              </FormControl> */}
+              {/* <FormControlLabel
                 control={
                   <Checkbox
                     checked={showPastDeadlines}
@@ -248,57 +268,54 @@ function Inventory() {
                 }
                 label="Show Expired Pickups"
               />
-            </Box>
+            </Box> */}
           </div>
         </div>
         <div className="container">
-          <table className="inventory-table"> 
+          <div className="inventory-count">Total Discs: {filteredInventory.length}</div>
+          <table className="inventory-table" style={{ tableLayout: 'fixed' }}> 
+            <colgroup>
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '21%' }} /> {/* Adjust the width as needed */}
+              <col style={{ width: '21%' }} /> {/* Adjust the width as needed */}
+              <col style={{ width: '25%' }} /> {/* Adjust the width as needed */}
+              <col style={{ width: '25%' }} /> {/* Adjust the width as needed */}
+            </colgroup>
             <thead>
               <tr>
                 <th className="table-header"> </th>
                 {/* <th className="table-header">ID</th>  */}
-                <th className="table-header">Name</th> 
-                <th className="table-header">Phone Number</th> 
-                <th className="table-header">Disc</th> 
+                {/* <th className="table-header">Name</th>  */}
                 {/* <th className="table-header">Color</th> 
                 <th className="table-header">Bin</th> 
                 <th className="table-header">Date Found</th> 
                 <th className="table-header">Comments</th>  */}
-                <th className="table-header">Actions</th> 
+
+                {renderColumnHeader('name', 'Name')}
+                {/* {renderColumnHeader('name', 'Phone Number')} */}
+                {/* <th className="table-header">Phone Number</th>  */}
+                {renderColumnHeader('disc', 'Disc')}
+                {renderColumnHeader('dateFound', 'Date Found')}
+                {renderColumnHeader('pickupDeadline', 'Pickup Deadline')}
+                
+                {/* 
+                <th className="table-header">Disc</th> 
+                
+                <th className="table-header">Actions</th>  */}
               </tr>
             </thead>
             <tbody>
               {filteredInventory.map((disc) => (
                 <React.Fragment key={disc.id}>
-                  <tr onClick={() => toggleRow(disc.id!)}>
+                  <tr onClick={() => toggleRow(disc.id!)} className={new Date(disc.pickupDeadline!) < new Date() ? 'past-deadline-row' : ''}>
                     <td className="table-cell">{expandedRows.includes(disc.id!) ? '▼' : '▶'}</td>
                     {/* <td className="table-cell">{disc.id}</td> */}
                     <td className="table-cell">{disc.name}</td>
-                    <td className="table-cell">{disc.phoneNumber}</td>
+                    {/* <td className="table-cell">{formatPhoneNumber(disc.phoneNumber)}</td> */}
                     <td className="table-cell">{disc.disc}</td>
+                    <td className="table-cell">{disc.dateFound}</td>
+                    <td className="table-cell">{disc.pickupDeadline}</td>
                     <td className="table-cell">
-                    {isLoading ? (
-                    <div><CircularProgress/></div>
-                    ) : (
-                      <div>
-                        {disc.id !== claimedDisc ? (
-                          // Check if the pickup deadline is in the past
-                          new Date(disc.pickupDeadline!) < new Date() ? (
-                            <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
-                              Move to $5 Box
-                            </button>
-                            // <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
-                            //   Mark as Claimed
-                            // </button>
-                          ) : (
-                            <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
-                              Mark as Claimed
-                            </button>
-                          )
-                        ) : null}
-                      </div>
-                    )}
-                    {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
                   </td>
                   </tr>
                   {/* Additional details row */}
@@ -335,14 +352,14 @@ function Inventory() {
                               id="outlined-uncontrolled"
                               sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
                               label="Phone Number"
-                              defaultValue={disc.phoneNumber}
+                              defaultValue={formatPhoneNumber(disc.phoneNumber)}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 disc.phoneNumber = e.target.value;
                                   setEditedDisc({ ...disc, phoneNumber: e.target.value });
                                 }}
                             />
                             ) : (
-                              <p><strong>Phone Number: </strong>{disc.phoneNumber}</p>
+                              <p><strong>Phone Number: </strong>{formatPhoneNumber(disc.phoneNumber)}</p>
                             )}
                           </div>
                           <div className="row">
@@ -489,6 +506,28 @@ function Inventory() {
                               <p><strong>Comments: </strong>{disc.comments}</p>
                             )}
                           </div>
+                          {isLoading ? (
+                    <div><CircularProgress/></div>
+                    ) : (
+                      <div>
+                        {disc.id !== claimedDisc ? (
+                          // Check if the pickup deadline is in the past
+                          new Date(disc.pickupDeadline!) < new Date() ? (
+                            <button className="button" onClick={() => markAsFiveDollarBox(disc.id!.toString())}>
+                              Move to $5 Box
+                            </button>
+                            // <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
+                            //   Mark as Claimed
+                            // </button>
+                          ) : (
+                            <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
+                              Mark as Claimed
+                            </button>
+                          )
+                        ) : null}
+                      </div>
+                    )}
+                    {successMessage && disc.id===claimedDisc && <div className="success-message">{successMessage}</div>}
                           
                         </div>
                       </td>
