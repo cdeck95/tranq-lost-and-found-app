@@ -25,7 +25,7 @@ export interface Disc {
   color: string;
   pickupDeadline?: string | null;
 }
-//testing
+
 export const API_BASE_URL = 'https://lost-and-found-api-gl8z.onrender.com'; //production URL
 //export const API_BASE_URL = 'http://127.0.0.1:3001'; // local testing
 
