@@ -28,6 +28,9 @@ function PublicInventory() {
     const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
     const isMediumLarge = useMediaQuery(theme.breakpoints.down("lg"));
     const isLarge = useMediaQuery(theme.breakpoints.down("xl"));
+    const [sortOption, setSortOption] = useState<keyof Disc>('pickupDeadline'); // Set initial sort option
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); // Set initial sort direction to DESC
+    const [showPastDeadlines, setShowPastDeadlines] = useState(false);
 
     const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
 
@@ -77,23 +80,40 @@ function PublicInventory() {
         //console.log('Inventory:', convertedInventory);
   
         setInventory(convertedInventory);
-  
-        // Filter the inventory based on the search query
-        const filtered = convertedInventory.filter((disc: Disc) => {
-            const phoneNumberLast4Digits = disc.phoneNumber.slice(-4); // Get the last 4 digits of the phone number
-            return (
-              phoneNumberLast4Digits.includes(searchQuery) ||
-              disc.disc.includes(searchQuery) ||
-              maskLastName(disc.name).includes(searchQuery) ||
-              disc.comments?.includes(searchQuery)
-            );
-          });
-        setFilteredInventory(filtered);
+
+        const sortedInventory = [...convertedInventory].sort((a: Disc, b: Disc) => {
+          const aValue = a[sortOption] as string; // Cast to string
+          const bValue = b[sortOption] as string; // Cast to string
+        
+          if (sortDirection === 'asc') {
+            return aValue.localeCompare(bValue);
+          } else {
+            return bValue.localeCompare(aValue);
+          }
+        });
+    
+        // setFilteredInventory(filtered);
+        const filteredInventory = sortedInventory.filter((disc: Disc) => {
+          const isMatch =
+            disc.phoneNumber.includes(searchQuery) ||
+            disc.disc.includes(searchQuery) ||
+            disc.name.includes(searchQuery) ||
+            disc.comments?.includes(searchQuery);
+        
+          // Check if the user wants to see past deadlines and if the pickupDeadline is in the past
+          if (showPastDeadlines) {
+            return isMatch && (!disc.pickupDeadline || new Date(disc.pickupDeadline) < new Date());
+          } else {
+            return isMatch;
+          }
+        });
+        
+        setFilteredInventory(filteredInventory);
       })
       .catch((error) => {
         console.error('Error fetching inventory:', error);
       });
-  }, [searchQuery]);
+  }, [searchQuery, sortDirection, sortOption]);
 
   function maskLastName(name: string): string {
     // Extract the last name (assuming last names are separated by a space)
@@ -110,6 +130,29 @@ function PublicInventory() {
     // Return the original name if it doesn't contain a last name
     return name;
   }
+
+  const handleSort = (selectedOption: keyof Disc) => {
+    if (selectedOption === sortOption) {
+      // Toggle sort direction
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortDirection('asc'); // Default to ascending if a new option is selected
+    }
+    setSortOption(selectedOption);
+  };
+
+  // Define a function to render the header with sorting indicator
+  const renderColumnHeader = (column: keyof Disc, label: string) => {
+    const isSorted = column === sortOption;
+    const isAscending = sortDirection === 'asc';
+    const arrow = isSorted ? (isAscending ? '▲' : '▼') : null;
+
+    return (
+      <th className="table-header" onClick={() => handleSort(column)}>
+        {label} {arrow}
+      </th>
+    );
+  };
   
 
   return (
@@ -143,32 +186,50 @@ function PublicInventory() {
     </div>
     <div className="container">
       <table className="inventory-table"> 
+        <colgroup>
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '21%' }} /> {/* Adjust the width as needed */}
+          <col style={{ width: '21%' }} /> {/* Adjust the width as needed */}
+          <col style={{ width: '25%' }} /> {/* Adjust the width as needed */}
+          <col style={{ width: '25%' }} /> {/* Adjust the width as needed */}
+        </colgroup>
         <thead>
-          <tr>
-            <th className="table-header"> </th>
-            {/* <th className="table-header">ID</th>  */}
-            <th className="table-header">Name</th> 
-            <th className="table-header">Phone Number</th> 
-            <th className="table-header">Disc</th> 
-            {/* <th className="table-header">Color</th> 
-            <th className="table-header">Bin</th> 
-            <th className="table-header">Date Found</th> 
-            <th className="table-header">Comments</th>  */}
-            {/* <th className="table-header">Actions</th>  */}
-          </tr>
-        </thead>
+              <tr>
+                <th className="table-header"> </th>
+                {/* <th className="table-header">ID</th>  */}
+                {/* <th className="table-header">Name</th>  */}
+                {/* <th className="table-header">Color</th> 
+                <th className="table-header">Bin</th> 
+                <th className="table-header">Date Found</th> 
+                <th className="table-header">Comments</th>  */}
+
+                {renderColumnHeader('name', 'Name')}
+                {/* {renderColumnHeader('name', 'Phone Number')} */}
+                {/* <th className="table-header">Phone Number</th>  */}
+                {renderColumnHeader('disc', 'Disc')}
+                {renderColumnHeader('dateFound', 'Date Found')}
+                {renderColumnHeader('pickupDeadline', 'Pickup Deadline')}
+                
+                {/* 
+                <th className="table-header">Disc</th> 
+                
+                <th className="table-header">Actions</th>  */}
+              </tr>
+            </thead>
         <tbody>
           {filteredInventory.map((disc) => (
             <React.Fragment key={disc.id}>
-              <tr onClick={() => toggleRow(disc.id!)}>
-                <td className="table-cell">{expandedRows.includes(disc.id!) ? '▼' : '▶'}</td>
-                {/* <td className="table-cell">{disc.id}</td> */}
-                <td className="table-cell">{maskLastName(disc.name)}</td>
-                <td className="table-cell">{maskPhoneNumber(disc.phoneNumber)}</td>
-                <td className="table-cell">{disc.disc}</td>
-                {/* <td className="table-cell"></td> */}
+              <tr onClick={() => toggleRow(disc.id!)} className={new Date(disc.pickupDeadline!) < new Date() ? 'past-deadline-row' : ''}>
+                    <td className="table-cell">{expandedRows.includes(disc.id!) ? '▼' : '▶'}</td>
+                    {/* <td className="table-cell">{disc.id}</td> */}
+                    <td className="table-cell">{disc.name}</td>
+                    {/* <td className="table-cell">{formatPhoneNumber(disc.phoneNumber)}</td> */}
+                    <td className="table-cell">{disc.disc}</td>
+                    <td className="table-cell">{disc.dateFound}</td>
+                    <td className="table-cell">{disc.pickupDeadline}</td>
+                    <td className="table-cell">
+                  </td>
               </tr>
-              {/* Additional details row */}
               {expandedRows.includes(disc.id!) && (
                 <tr>
                   <td colSpan={8}> {/* Use appropriate colspan */}
