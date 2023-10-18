@@ -32,7 +32,7 @@
 }
 
 .past-deadline-row {
-  border-left: 8px solid #ff9999; /* Red border on the left side */
+  border-left: 10px solid #ff9999; /* Red border on the left side */
   color: inherit; /* Inherit text color to maintain text visibility */
 
   /* background-color: #ff6666; 
