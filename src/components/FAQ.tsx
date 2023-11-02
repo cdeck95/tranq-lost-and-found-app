@@ -69,7 +69,7 @@ const FAQData: FAQItem[] = [
   {
     question: 'How do I pick up my disc?',
     answer:
-      'To pick up your disc, contact one of our volunteers via text to coordinate a time to retrieve it. You can reach out to Steve Finger @ 609-280-7999 or Dan Kelly @ 856-628-1436. Alternatively, a decision could be made to leave the disc in a lockbox and provide you with the access code for your convenience, if this is preferred.',
+      'To pick up your disc, contact one of our volunteers via text to coordinate a time to retrieve it. A min of 12 hours lead-time is required. Do not just show up at the course and expect to get your disc back. You can reach out to Steve Finger @ 609-280-7999 or Dan Kelly @ 856-628-1436 to schedule a pickup window.',
   },{
     question: 'What should I do if I\'m unable to collect my disc?',
     answer:
