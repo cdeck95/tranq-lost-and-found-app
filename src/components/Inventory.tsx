@@ -204,11 +204,11 @@ function Inventory() {
   //   setShowPastDeadlines(!showPastDeadlines);
   // };
 
-  const markAsFiveDollarBox = (discId: string, course: string) => {
+  const listForSale = (discId: string, course: string) => {
     setIsLoading(true);
-    console.log("Marking as $5 Box");
+    console.log("Marking as for sale");
 
-    // Make an API call to mark the disc as a $5 Box
+    // Make an API call to mark the disc as for sale
     axios
       .put(`${API_BASE_URL}/api/change-status/${discId}`, null, {
         params: {
@@ -216,15 +216,14 @@ function Inventory() {
         },
       })
       .then((response) => {
-        //console.log('Disc marked as $5 Box:', response.data);
         setIsLoading(false);
-        setSuccessMessage("Disc is now in the $5 Box");
+        setSuccessMessage("Disc is now in the for sale bin");
         setClaimedDisc(parseInt(discId));
       })
       .catch((error) => {
-        console.error("Error marking disc as $5 Box:", error);
+        console.error("Error marking disc as for sale:", error);
         setIsLoading(false);
-        setSuccessMessage("Error marking disc as $5 Box");
+        setSuccessMessage("Error marking disc as for sale");
       });
   };
 
@@ -774,13 +773,13 @@ function Inventory() {
                                     <button
                                       className="button"
                                       onClick={() =>
-                                        markAsFiveDollarBox(
+                                        listForSale(
                                           disc.id!.toString(),
                                           "Tranquility Trails"
                                         )
                                       }
                                     >
-                                      Move to $5 Box
+                                      List For Sale
                                     </button>
                                   )}
 
