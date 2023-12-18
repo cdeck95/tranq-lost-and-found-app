@@ -217,7 +217,7 @@ function Inventory() {
       })
       .then((response) => {
         setIsLoading(false);
-        setSuccessMessage("Disc is now in the for sale bin");
+        setSuccessMessage("Disc is now for sale");
         setClaimedDisc(parseInt(discId));
       })
       .catch((error) => {
