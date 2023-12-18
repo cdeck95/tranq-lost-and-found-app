@@ -1,33 +1,33 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import CircularProgress from '@mui/material/CircularProgress';
+import React, { useState } from "react";
+import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
 
-
-import '../styles/EnterLostDisc.css'; // Import the CSS file
-import { API_BASE_URL } from '../App';
+import "../styles/EnterLostDisc.css"; // Import the CSS file
+import { API_BASE_URL } from "../App";
 
 function EnterLostDisc() {
   const [discData, setDiscData] = useState({
-    course: 'Tranquility Trails',
-    name: '',
-    disc: '',
-    phoneNumber: '',
-    bin: '',
-    comments: '',
-    dateFound: new Date().toISOString().split('T')[0],
-    color: '',
+    course: "Tranquility Trails",
+    name: "",
+    disc: "",
+    phoneNumber: "",
+    bin: "",
+    comments: "",
+    dateFound: new Date().toISOString().split("T")[0],
+    color: "",
+    brand: "",
   });
 
   const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // Enforce numbers-only input for the phone number and bin fields
-    if ((name === 'phoneNumber' || name === 'bin') && !/^\d*$/.test(value)) {
+    if ((name === "phoneNumber" || name === "bin") && !/^\d*$/.test(value)) {
       return;
     }
-    
+
     setDiscData({ ...discData, [name]: value });
   };
 
@@ -35,32 +35,34 @@ function EnterLostDisc() {
     e.preventDefault();
     setIsLoading(true); // Set loading to true when the request is initiated
 
-    axios.post(`${API_BASE_URL}/api/found-discs`, discData)
+    axios
+      .post(`${API_BASE_URL}/api/found-discs`, discData)
       .then((response) => {
-        console.log('Disc added:', response.data);
+        console.log("Disc added:", response.data);
 
         // Set success message with the ID of the row from the DB
         setSuccessMessage(`Disc added with ID ${response.data.id}`);
 
         // Clear the form and loading state
         setDiscData({
-          course: 'Tranquility Trails',
-          name: '',
-          disc: '',
-          phoneNumber: '',
-          bin: '',
-          comments: '',
-          dateFound: new Date().toISOString().split('T')[0],
-          color: '',
+          course: "Tranquility Trails",
+          name: "",
+          disc: "",
+          phoneNumber: "",
+          bin: "",
+          comments: "",
+          dateFound: new Date().toISOString().split("T")[0],
+          color: "",
+          brand: "",
         });
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error('Error adding disc:', error);
+        console.error("Error adding disc:", error);
         setIsLoading(false); // Clear loading state on error
       });
   };
-  
+
   return (
     <div className="lost-disc-container">
       <h1>Enter Lost Disc</h1>
@@ -84,6 +86,16 @@ function EnterLostDisc() {
             value={discData.phoneNumber}
             onChange={handleChange}
             placeholder="xxx-xxx-xxxx"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="disc">Brand:</label>
+          <input
+            type="text"
+            id="brand"
+            name="brand"
+            value={discData.brand}
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -126,12 +138,11 @@ function EnterLostDisc() {
             onChange={handleChange}
           />
         </div>
-        <button type="submit" className={`submit-button ${isLoading ? 'loading' : ''}`}>
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            'Submit'
-          )}
+        <button
+          type="submit"
+          className={`submit-button ${isLoading ? "loading" : ""}`}
+        >
+          {isLoading ? <CircularProgress /> : "Submit"}
         </button>
       </form>
       {successMessage && <p className="success-message">{successMessage}</p>}
