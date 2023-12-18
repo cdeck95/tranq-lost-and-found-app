@@ -210,7 +210,7 @@ function ForSaleInventory() {
 
     // Make an API call to mark the disc as for sale
     axios
-      .put(`${API_BASE_URL}/api/change-status/${discId}`, null, {
+      .put(`${API_BASE_URL}/api/mark-sold/${discId}`, null, {
         params: {
           course: course,
         },
