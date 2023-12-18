@@ -42,7 +42,7 @@ function Inventory() {
   const [sortOption, setSortOption] = useState<keyof Disc>("pickupDeadline"); // Set initial sort option
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc"); // Set initial sort direction to DESC
   const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
-  const [showPastDeadlines, setShowPastDeadlines] = useState(false);
+  // const [showPastDeadlines, setShowPastDeadlines] = useState(false);
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const [refreshing, setRefreshing] = useState(false);
@@ -117,16 +117,17 @@ function Inventory() {
             disc.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             disc.comments?.toLowerCase().includes(searchQuery.toLowerCase());
 
+          return isMatch;
           // Check if the user wants to see past deadlines and if the pickupDeadline is in the past
-          if (showPastDeadlines) {
-            return (
-              isMatch &&
-              (!disc.pickupDeadline ||
-                new Date(disc.pickupDeadline) < new Date())
-            );
-          } else {
-            return isMatch;
-          }
+          // if (showPastDeadlines) {
+          //   return (
+          //     isMatch &&
+          //     (!disc.pickupDeadline ||
+          //       new Date(disc.pickupDeadline) < new Date())
+          //   );
+          // } else {
+          //   return isMatch;
+          // }
         });
 
         setFilteredInventory(filteredInventory);
@@ -138,7 +139,7 @@ function Inventory() {
 
   useEffect(() => {
     getInventory("Tranquility Trails");
-  }, [searchQuery, showPastDeadlines, sortDirection, sortOption]);
+  }, [searchQuery, sortDirection, sortOption]);
 
   const markAsClaimed = (discId: string) => {
     setIsLoading(true); // Set loading state to true
@@ -199,17 +200,21 @@ function Inventory() {
   //   setSortDirection(selectedDirection);
   // };
 
-  const toggleShowPastDeadlines = () => {
-    setShowPastDeadlines(!showPastDeadlines);
-  };
+  // const toggleShowPastDeadlines = () => {
+  //   setShowPastDeadlines(!showPastDeadlines);
+  // };
 
-  const markAsFiveDollarBox = (discId: string) => {
+  const markAsFiveDollarBox = (discId: string, course: string) => {
     setIsLoading(true);
     console.log("Marking as $5 Box");
 
     // Make an API call to mark the disc as a $5 Box
     axios
-      .put(`${API_BASE_URL}/api/change-status/${discId}`)
+      .put(`${API_BASE_URL}/api/change-status/${discId}`, null, {
+        params: {
+          course: course,
+        },
+      })
       .then((response) => {
         //console.log('Disc marked as $5 Box:', response.data);
         setIsLoading(false);
@@ -769,7 +774,10 @@ function Inventory() {
                                     <button
                                       className="button"
                                       onClick={() =>
-                                        markAsFiveDollarBox(disc.id!.toString())
+                                        markAsFiveDollarBox(
+                                          disc.id!.toString(),
+                                          "Tranquility Trails"
+                                        )
                                       }
                                     >
                                       Move to $5 Box
