@@ -5,6 +5,7 @@ import "../styles/Inventory.css"; // Import the CSS file
 import { DateTime } from "luxon";
 import {
   Box,
+  Button,
   CircularProgress,
   Divider,
   FormControl,
@@ -753,29 +754,38 @@ function Inventory() {
                           ) : (
                             <div>
                               {disc.id !== claimedDisc ? (
-                                // Check if the pickup deadline is in the past
-                                new Date(disc.pickupDeadline!) < new Date() ? (
-                                  <button
-                                    className="button"
-                                    onClick={() =>
-                                      markAsFiveDollarBox(disc.id!.toString())
-                                    }
-                                  >
-                                    Move to $5 Box
-                                  </button>
-                                ) : (
-                                  // <button className="button" onClick={() => markAsClaimed(disc.id!.toString())}>
-                                  //   Mark as Claimed
-                                  // </button>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    width: "100%",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  {/* Check if the pickup deadline is in the past */}
+                                  {new Date(disc.pickupDeadline!) <
+                                    new Date() && (
+                                    <button
+                                      className="button"
+                                      onClick={() =>
+                                        markAsFiveDollarBox(disc.id!.toString())
+                                      }
+                                    >
+                                      Move to $5 Box
+                                    </button>
+                                  )}
+
                                   <button
                                     className="button"
                                     onClick={() =>
                                       markAsClaimed(disc.id!.toString())
                                     }
+                                    style={{ marginLeft: "10px" }}
                                   >
                                     Mark as Claimed
                                   </button>
-                                )
+                                </Box>
                               ) : null}
                             </div>
                           )}
