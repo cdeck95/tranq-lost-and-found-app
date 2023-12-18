@@ -24,10 +24,11 @@ export interface Disc {
   color: string;
   pickupDeadline?: string | null;
   brand?: string | null;
+  dateSold?: string | null;
 }
 
-export const API_BASE_URL = "https://lost-and-found-api-gl8z.onrender.com"; //production URL
-//export const API_BASE_URL = "http://127.0.0.1:3001"; // local testing
+//export const API_BASE_URL = "https://lost-and-found-api-gl8z.onrender.com"; //production URL
+export const API_BASE_URL = "http://127.0.0.1:3001"; // local testing
 
 function App() {
   const [activeTab, setActiveTab] = useState("enterLostDisc"); // Default active tab
