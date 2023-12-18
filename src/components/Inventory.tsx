@@ -52,7 +52,7 @@ function Inventory() {
   // }, []);
 
   const handleRefresh = async () => {
-    getInventory();
+    getInventory("Tranquility Trails");
   };
 
   const toggleRow = (rowId: RowId) => {
@@ -72,9 +72,13 @@ function Inventory() {
     return dateUTC.toFormat("yyyy-MM-dd");
   };
 
-  const getInventory = () => {
+  const getInventory = (course: string) => {
     axios
-      .get(`${API_BASE_URL}/api/inventory`)
+      .get(`${API_BASE_URL}/api/inventory`, {
+        params: {
+          course: course,
+        },
+      })
       .then((response) => {
         // Convert UTC timestamps to EST
         const convertedInventory = response.data.map((disc: Disc) => ({
@@ -132,7 +136,7 @@ function Inventory() {
   };
 
   useEffect(() => {
-    getInventory();
+    getInventory("Tranquility Trails");
   }, [searchQuery, showPastDeadlines, sortDirection, sortOption]);
 
   const markAsClaimed = (discId: string) => {
