@@ -16,12 +16,6 @@ const CameraComponent: React.FC<CameraComponentProps> = ({
   side,
   switchToManual,
 }) => {
-  // const FACING_MODE_USER = "user";
-  // const FACING_MODE_ENVIRONMENT = "environment";
-  // const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
-  // const videoConstraints = {
-  //   facingMode: FACING_MODE_ENVIRONMENT,
-  // };
   const videoConstraints = {
     facingMode: { exact: "environment" },
   };
