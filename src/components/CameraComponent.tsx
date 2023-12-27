@@ -16,11 +16,14 @@ const CameraComponent: React.FC<CameraComponentProps> = ({
   side,
   switchToManual,
 }) => {
-  const FACING_MODE_USER = "user";
-  const FACING_MODE_ENVIRONMENT = "environment";
-  const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
+  // const FACING_MODE_USER = "user";
+  // const FACING_MODE_ENVIRONMENT = "environment";
+  // const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
+  // const videoConstraints = {
+  //   facingMode: FACING_MODE_ENVIRONMENT,
+  // };
   const videoConstraints = {
-    facingMode: FACING_MODE_ENVIRONMENT,
+    facingMode: { exact: "environment" },
   };
   const webcamRef = useRef<Webcam>(null); // Use a generic type for better type checking
   const intervalRef = useRef<number | null>(null);
@@ -102,10 +105,7 @@ const CameraComponent: React.FC<CameraComponentProps> = ({
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           className="webcam"
-          videoConstraints={{
-            ...videoConstraints,
-            facingMode,
-          }}
+          videoConstraints={videoConstraints}
         />
         <div className="circle-guide"></div>
         {isDark && (
