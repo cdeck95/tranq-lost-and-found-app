@@ -16,6 +16,12 @@ const CameraComponent: React.FC<CameraComponentProps> = ({
   side,
   switchToManual,
 }) => {
+  const FACING_MODE_USER = "user";
+  const FACING_MODE_ENVIRONMENT = "environment";
+  const [facingMode, setFacingMode] = React.useState(FACING_MODE_USER);
+  const videoConstraints = {
+    facingMode: FACING_MODE_ENVIRONMENT,
+  };
   const webcamRef = useRef<Webcam>(null); // Use a generic type for better type checking
   const intervalRef = useRef<number | null>(null);
   const [isDark, setIsDark] = useState(false); // State to track lighting condition
@@ -92,9 +98,14 @@ const CameraComponent: React.FC<CameraComponentProps> = ({
     <div>
       <div style={{ position: "relative" }}>
         <Webcam
+          audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           className="webcam"
+          videoConstraints={{
+            ...videoConstraints,
+            facingMode,
+          }}
         />
         <div className="circle-guide"></div>
         {isDark && (
