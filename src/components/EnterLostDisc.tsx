@@ -23,7 +23,7 @@ interface DiscData {
 
 function EnterLostDisc() {
   const [discData, setDiscData] = useState<DiscData>({
-    course: "Stafford Woods",
+    course: "Tranquility Trails",
     name: "",
     disc: "",
     phoneNumber: "",
@@ -251,7 +251,7 @@ function EnterLostDisc() {
 
         // Clear the form and loading state
         setDiscData({
-          course: "Stafford Woods",
+          course: "Tranquility Trails",
           name: "",
           disc: "",
           phoneNumber: "",
