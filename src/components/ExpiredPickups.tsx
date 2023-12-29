@@ -54,7 +54,7 @@ function ExpiredPickups() {
 
   useEffect(() => {
     axios
-      .get(`${API_BASE_URL}/api/inventory`)
+      .get(`${API_BASE_URL}/inventory`)
       .then((response) => {
         // Convert UTC timestamps to EST
         const convertedInventory = response.data.map((disc: Disc) => ({
@@ -103,7 +103,7 @@ function ExpiredPickups() {
     setIsLoading(true); // Set loading state to true
 
     axios
-      .put(`${API_BASE_URL}/api/mark-claimed/${discId}`)
+      .put(`${API_BASE_URL}/mark-claimed/${discId}`)
       .then((response) => {
         console.log("Disc marked as claimed:", response.data);
         setIsLoading(false); // Set loading state to false
@@ -132,7 +132,7 @@ function ExpiredPickups() {
   const saveEditedDisc = (editedDiscIn: Disc) => {
     if (editedDiscIn) {
       axios
-        .put(`${API_BASE_URL}/api/edit-disc/${editedDiscIn.id}`, editedDiscIn)
+        .put(`${API_BASE_URL}/edit-disc/${editedDiscIn.id}`, editedDiscIn)
         .then((response) => {
           console.log("Disc updated:", response.data);
           // Refresh the inventory or handle success as needed

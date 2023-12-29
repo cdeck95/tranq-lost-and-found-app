@@ -75,7 +75,7 @@ function PublicInventory() {
   useEffect(() => {
     const course = "Tranquility Trails";
     axios
-      .get(`${API_BASE_URL}/api/inventory`, {
+      .get(`${API_BASE_URL}/inventory`, {
         params: {
           course: course,
         },
