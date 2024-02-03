@@ -62,9 +62,7 @@ function ExpiredPickups() {
           dateFound: convertToEST(disc.dateFound),
           dateTexted: disc.dateTexted ? convertToEST(disc.dateTexted) : null,
           dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
-          pickupDeadline: disc.pickupDeadline
-            ? convertToEST(disc.pickupDeadline)
-            : null,
+          claimBy: disc.claimBy ? convertToEST(disc.claimBy) : null,
         }));
         console.log("Inventory:", convertedInventory);
 
@@ -192,7 +190,7 @@ function ExpiredPickups() {
               <Select value={sortOption} onChange={handleSort}>
                 <MenuItem value="dateFound">Date Found</MenuItem>
                 <MenuItem value="name">Name</MenuItem>
-                <MenuItem value="pickupDeadline">Pickup Deadline</MenuItem>
+                <MenuItem value="claimBy">Claim By</MenuItem>
               </Select>
             </FormControl>
 
@@ -572,22 +570,22 @@ function ExpiredPickups() {
                                 justifyContent: "center",
                                 alignItems: "center",
                               }}
-                              label="Pickup Deadline"
-                              defaultValue={disc.pickupDeadline}
+                              label="Claim By"
+                              defaultValue={disc.claimBy}
                               onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                               ) => {
-                                disc.pickupDeadline = e.target.value;
+                                disc.claimBy = e.target.value;
                                 setEditedDisc({
                                   ...disc,
-                                  pickupDeadline: e.target.value,
+                                  claimBy: e.target.value,
                                 });
                               }}
                             />
                           ) : (
                             <p>
-                              <strong>Pickup Deadline: </strong>
-                              {disc.pickupDeadline}
+                              <strong>Claim By: </strong>
+                              {disc.claimBy}
                             </p>
                           )}
                         </div>

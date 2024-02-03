@@ -39,7 +39,7 @@ function ForSaleInventory() {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [claimedDisc, setClaimedDisc] = useState<number>(0); // Provide the type 'Disc | null'
-  const [sortOption, setSortOption] = useState<keyof Disc>("pickupDeadline"); // Set initial sort option
+  const [sortOption, setSortOption] = useState<keyof Disc>("claimBy"); // Set initial sort option
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc"); // Set initial sort direction to DESC
   const [expandedRows, setExpandedRows] = useState<RowId[]>([]);
   // const [showPastDeadlines, setShowPastDeadlines] = useState(false);
@@ -87,9 +87,7 @@ function ForSaleInventory() {
           dateFound: convertToEST(disc.dateFound),
           dateTexted: disc.dateTexted ? convertToEST(disc.dateTexted) : null,
           dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
-          pickupDeadline: disc.pickupDeadline
-            ? convertToEST(disc.pickupDeadline)
-            : null,
+          claimBy: disc.claimBy ? convertToEST(disc.claimBy) : null,
         }));
         //console.log('Inventory:', convertedInventory);
 
@@ -118,12 +116,12 @@ function ForSaleInventory() {
             disc.comments?.toLowerCase().includes(searchQuery.toLowerCase());
 
           return isMatch;
-          // Check if the user wants to see past deadlines and if the pickupDeadline is in the past
+          // Check if the user wants to see past deadlines and if the claimBy is in the past
           // if (showPastDeadlines) {
           //   return (
           //     isMatch &&
-          //     (!disc.pickupDeadline ||
-          //       new Date(disc.pickupDeadline) < new Date())
+          //     (!disc.claimBy ||
+          //       new Date(disc.claimBy) < new Date())
           //   );
           // } else {
           //   return isMatch;
@@ -290,7 +288,7 @@ function ForSaleInventory() {
                 <Select value={sortOption} onChange={handleSort}>
                   <MenuItem value="dateFound">Date Found</MenuItem>
                   <MenuItem value="name">Name</MenuItem>
-                  <MenuItem value="pickupDeadline">Pickup Deadline</MenuItem>
+                  <MenuItem value="claimBy">Claim By</MenuItem>
                 </Select>
               </FormControl>
 
@@ -345,7 +343,7 @@ function ForSaleInventory() {
                 {/* <th className="table-header">Phone Number</th>  */}
                 {renderColumnHeader("disc", "Disc")}
                 {renderColumnHeader("dateFound", "Date Found")}
-                {renderColumnHeader("pickupDeadline", "Pickup Deadline")}
+                {renderColumnHeader("claimBy", "Claim By")}
 
                 {/* 
                 <th className="table-header">Disc</th> 
@@ -359,7 +357,7 @@ function ForSaleInventory() {
                   <tr
                     onClick={() => toggleRow(disc.id!)}
                     className={
-                      new Date(disc.pickupDeadline!) < new Date()
+                      new Date(disc.claimBy!) < new Date()
                         ? "past-deadline-row"
                         : ""
                     }
@@ -372,7 +370,7 @@ function ForSaleInventory() {
                     {/* <td className="table-cell">{formatPhoneNumber(disc.phoneNumber)}</td> */}
                     <td className="table-cell">{disc.disc}</td>
                     <td className="table-cell">{disc.dateFound}</td>
-                    <td className="table-cell">{disc.pickupDeadline}</td>
+                    <td className="table-cell">{disc.claimBy}</td>
                     <td className="table-cell"></td>
                   </tr>
                   {/* Additional details row */}
@@ -706,17 +704,17 @@ function ForSaleInventory() {
                               <TextField
                                 id="outlined-uncontrolled"
                                 sx={{ marginTop: "10px", marginBottom: "10px", marginLeft: "auto", marginRight: "auto", justifyContent: "center", alignItems: "center"}}
-                                label="Pickup Deadline"
-                                defaultValue={disc.pickupDeadline}
+                                label="Claim By"
+                                defaultValue={disc.claimBy}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                  disc.pickupDeadline = e.target.value;
-                                  setEditedDisc({ ...disc, pickupDeadline: e.target.value });
+                                  disc.claimBy = e.target.value;
+                                  setEditedDisc({ ...disc, claimBy: e.target.value });
                                   }}
                               />
                             ) : ( */}
                             <p>
-                              <strong>Pickup Deadline: </strong>
-                              {disc.pickupDeadline}
+                              <strong>Claim By: </strong>
+                              {disc.claimBy}
                             </p>
                             {/* )} */}
                           </div>
@@ -767,9 +765,8 @@ function ForSaleInventory() {
                                     alignItems: "center",
                                   }}
                                 >
-                                  {/* Check if the pickup deadline is in the past */}
-                                  {new Date(disc.pickupDeadline!) <
-                                    new Date() && (
+                                  {/* Check if the Claim By is in the past */}
+                                  {new Date(disc.claimBy!) < new Date() && (
                                     <button
                                       className="inventory-button"
                                       onClick={() =>

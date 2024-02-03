@@ -35,7 +35,7 @@ function PublicInventory() {
   const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const isMediumLarge = useMediaQuery(theme.breakpoints.down("lg"));
   const isLarge = useMediaQuery(theme.breakpoints.down("xl"));
-  const [sortOption, setSortOption] = useState<keyof Disc>("pickupDeadline"); // Set initial sort option
+  const [sortOption, setSortOption] = useState<keyof Disc>("claimBy"); // Set initial sort option
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc"); // Set initial sort direction to DESC
   const [showPastDeadlines, setShowPastDeadlines] = useState(false);
 
@@ -87,9 +87,7 @@ function PublicInventory() {
           dateFound: convertToEST(disc.dateFound),
           dateTexted: disc.dateTexted ? convertToEST(disc.dateTexted) : null,
           dateClaimed: disc.dateClaimed ? convertToEST(disc.dateClaimed) : null,
-          pickupDeadline: disc.pickupDeadline
-            ? convertToEST(disc.pickupDeadline)
-            : null,
+          claimBy: disc.claimBy ? convertToEST(disc.claimBy) : null,
         }));
         //console.log('Inventory:', convertedInventory);
 
@@ -117,12 +115,10 @@ function PublicInventory() {
             disc.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             disc.comments?.toLowerCase().includes(searchQuery.toLowerCase());
 
-          // Check if the user wants to see past deadlines and if the pickupDeadline is in the past
+          // Check if the user wants to see past deadlines and if the claimBy is in the past
           if (showPastDeadlines) {
             return (
-              isMatch &&
-              (!disc.pickupDeadline ||
-                new Date(disc.pickupDeadline) < new Date())
+              isMatch && (!disc.claimBy || new Date(disc.claimBy) < new Date())
             );
           } else {
             return isMatch;
@@ -255,7 +251,7 @@ function PublicInventory() {
               {/* <th className="table-header">Phone Number</th>  */}
               {renderColumnHeader("disc", "Disc")}
               {renderColumnHeader("dateFound", "Date Found")}
-              {renderColumnHeader("pickupDeadline", "Pickup Deadline")}
+              {renderColumnHeader("claimBy", "Claim By")}
 
               {/* 
                 <th className="table-header">Disc</th> 
@@ -269,7 +265,7 @@ function PublicInventory() {
                 <tr
                   onClick={() => toggleRow(disc.id!)}
                   className={
-                    new Date(disc.pickupDeadline!) < new Date()
+                    new Date(disc.claimBy!) < new Date()
                       ? "past-deadline-row"
                       : ""
                   }
@@ -282,7 +278,7 @@ function PublicInventory() {
                   {/* <td className="table-cell">{formatPhoneNumber(disc.phoneNumber)}</td> */}
                   <td className="table-cell">{disc.disc}</td>
                   <td className="table-cell">{disc.dateFound}</td>
-                  <td className="table-cell">{disc.pickupDeadline}</td>
+                  <td className="table-cell">{disc.claimBy}</td>
                   <td className="table-cell"></td>
                 </tr>
                 {expandedRows.includes(disc.id!) && (
@@ -339,8 +335,8 @@ function PublicInventory() {
                           {disc.status}
                         </p>
                         <p>
-                          <strong>Pickup Deadline: </strong>
-                          {disc.pickupDeadline}
+                          <strong>Claim By: </strong>
+                          {disc.claimBy}
                         </p>
                         <p>
                           <strong>Comments: </strong>

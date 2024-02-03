@@ -68,9 +68,9 @@ const FAQData: FAQItem[] = [
   },
   {
     question:
-      "What does the pickup deadline mean? Will I lose my ability to claim my disc?",
+      "What does the Claim By mean? Will I lose my ability to claim my disc?",
     answer:
-      'The pickup deadline is the date by which you should retrieve your disc from the inventory. After this date, the disc may be marked as "For Sale" and you may lose the ability to claim it. It\'s essential to check the pickup deadline for your disc and take action accordingly.',
+      'The Claim By is the date by which you should retrieve your disc from the inventory. After this date, the disc may be marked as "For Sale" and you may lose the ability to claim it. It\'s essential to check the Claim By for your disc and take action accordingly.',
   },
   {
     question: "How do I pick up my disc?",
