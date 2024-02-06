@@ -1,11 +1,210 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap&family=Roboto");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
+
+:root,
+#root {
+  --primary-blue: #005daa;
+  --border-primary-blue: #228de5;
+  --dark-primary: #353535;
+  --secondary-blue: #228de5;
+  --primary-black: #000000;
+  --border-primary-black: #606060;
+  --primary-red: #ef3f3f;
+  --secondary-red: #b90c0c;
+  --border-primary-red: #b90c0c;
+  --primary-white: #ffffff;
+  --primary-grey: #f7f7f7;
+  --primary-green: #55de1f;
+  --table-seperator: #dcdcdc;
+  --error-red: #ff0000;
+  height: 100dvh;
+  width: 100dvw;
+}
+
+body {
+  /* font-family: "Bebas Neue", sans-serif; */
+  /* overflow: hidden !important; */
+  overflow-x: hidden !important;
+  height: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  background-color: var(--primary-grey);
+}
+
+button {
+  border-radius: 0px;
+  margin: 10px;
+  padding: 8px 6px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("../fonts/BebasNeue-Thin.eot");
+  src:
+    url("../fonts/BebasNeue-Thin.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/BebasNeue-Thin.woff2") format("woff2"),
+    url("../fonts/BebasNeue-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("../fonts/BebasNeueLight.eot");
+  src:
+    url("../fonts/BebasNeueLight.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/BebasNeueLight.woff2") format("woff2"),
+    url("../fonts/BebasNeueLight.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("../fonts/BebasNeueRegular.eot");
+  src:
+    url("../fonts/BebasNeueRegular.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/BebasNeueRegular.woff2") format("woff2"),
+    url("../fonts/BebasNeueRegular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.FAQ-Header {
+  font-size: 60px;
+  font-family: "Oswald", sans-serif;
+  font-weight: 600;
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 10px;
+}
+
 .App {
-  text-align: center;
+  /* text-align: center; */
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
+  overflow-y: hidden !important;
+  background-color: var(--primary-white);
+  /* height: auto;
+  width: 100%; */
+}
+
+.Header-content {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+header {
+  font-family: "Bebas Neue";
+  color: white;
+}
+
+.header {
+  font-size: 2rem;
+  font-family: "Bebas Neue";
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 1.7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button {
+  font-family: "Bebas Neue Light";
+}
+
+.Logo-Container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  height: auto;
+  width: 100%;
+}
+
+.logo {
+  height: auto;
+  width: 3em;
+  object-fit: contain;
+}
+
+.logo-text {
+  height: 1.5em;
+  width: auto;
+}
+
+.logo-300 {
+  width: 310px;
+  height: 50px;
+  margin-left: 7.5px;
+}
+
+.Navbar-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  border: none !important;
+  padding: 0px;
+  margin-left: "0.5rem !important";
+}
+
+.Navbar-menu {
+  cursor: pointer;
+  color: white;
+  border: none !important;
+  /* display: none; */
+}
+
+.Navbar-menu p {
+  color: white;
+}
+
+.Mobile-menu {
+  display: none;
+}
+
+.navButtonText {
+  font-family: "Bebas Neue Light";
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: white;
+}
+
+.icon {
+  cursor: pointer;
+  margin-left: 2.5px;
+}
+
+@media screen and (max-width: 900px) {
+  .Menu-responsive {
+    display: none;
+  }
+  .Navbar-menu {
+    display: block;
+  }
+  .FAQ-Header {
+    font-size: 26px;
+  }
+  .header {
+    font-size: 1.8rem;
+  }
 }
 
 .App-logo {
@@ -19,16 +218,122 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
+.banner {
+  align-items: flex-start;
+  background-color: var(--primary-red);
+  color: var(--primary-white);
+  border-radius: 0px;
+  /* box-shadow:
+    0px 0px 0px #00000008,
+    0px 1px 2px #00000008,
+    0px 3px 3px #00000008,
+    0px 7px 4px #00000005; */
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  padding: 5px;
-  padding-bottom: 20px;
+  justify-content: flex-start;
+  position: relative;
+  margin: auto;
+  padding: 0px;
+  height: 50px;
+  max-height: 50px;
   width: 100%;
+}
+
+.banner-text {
+  font-family: "Bebas Neue";
+  letter-spacing: 1.75px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-left: 5px;
+  padding: 5px;
+  margin-right: 160px;
+}
+.banner .banner-icon {
+  min-width: 24px;
+  margin-left: 5px;
+}
+.banner .close {
+  position: absolute;
+  right: 30px;
+  /* top: 10px; */
+  cursor: pointer;
+  font-family: "Bebas Neue";
+  font-size: 1.5rem;
+}
+
+.banner .banner-button {
+  font-family: "Bebas Neue";
+  padding: 4px 8px;
+  font-size: 16px;
+  color: var(--primary-white);
+  letter-spacing: 1px;
+  border: 1px solid var(--primary-white);
+  border-radius: 0px;
+  position: absolute;
+  cursor: pointer;
+  right: 60px;
+  background: transparent;
+}
+
+.App-header {
+  background-color: var(--primary-white);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  font-size: calc(10px + 2vmin);
+  width: 100%;
+  max-width: 1368px;
+  height: auto;
+  margin: auto;
+  padding: 15px 0px;
+  filter: drop-shadow(var(--primary-black) 0rem 2px rgba(0, 0, 0, 0.4));
+}
+
+@media screen and (max-width: 700px) {
+  .banner {
+    max-height: 50px;
+    transition: all 0.5s;
+  }
+
+  .banner-text {
+    font-size: 0.6rem;
+    margin-right: 20px;
+    transition: all 0.5s;
+  }
+
+  .banner .banner-icon {
+    min-width: 20px;
+    transition: all 0.5s;
+  }
+
+  .banner .banner-button {
+    display: none;
+    opacity: 0;
+    transition: all 0.5s;
+  }
+
+  .banner .close {
+    right: 10px;
+    font-size: 0.85rem;
+    transition: all 0.5s;
+  }
+
+  .App-header {
+    height: 60px;
+    padding: 5px 0px;
+  }
+
+  .logo-300 {
+    width: 207px;
+    height: 34px;
+  }
+
+  .copywrite {
+    font-size: 14px;
+    bottom: 10px;
+  }
 }
 
 .App-link {
@@ -68,7 +373,23 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: auto;
+  /* overflow: auto !important; */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  min-height: 100%;
+  background-color: var(--primary-grey);
+}
+.container::-webkit-scrollbar {
+  display: none;
+}
+.copywrite {
+  font-family: "Bebas Neue";
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--primary-black);
+  text-align: center;
+  padding-bottom: 1rem;
 }
 
 /* Style for the container div */
@@ -100,4 +421,76 @@
 
 .fab-button:hover {
   background-color: #0056b3; /* Hover background color */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  overflow-y: auto;
+  border: 1px solid var(--table-seperator);
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+}
+
+thead,
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+  top: -1px;
+  position: sticky;
+  z-index: 1000 !important;
+  border-top: 1px solid var(--table-seperator);
+  border-bottom: 1px solid var(--table-seperator);
+  /* width: 100%; */
+}
+
+tr {
+  border-bottom: 1px solid var(--table-seperator);
+  border-top: 1px solid var(--table-seperator);
+}
+
+.table-container {
+  /* overflow: auto !important; */
+  height: auto;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.detailed-text {
+  margin: 0px;
+  padding: 10px;
+  font-size: 0.85rem;
+  font-weight: 300;
+  border-bottom: 1px solid var(--table-seperator);
+  font-family: "Lato", sans-serif;
+  width: 99%;
+}
+
+.detailed-text-nopadding {
+  margin: 0px;
+  padding: 0px;
+  font-size: 0.85rem;
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+}
+
+.column-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.row-apart {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
