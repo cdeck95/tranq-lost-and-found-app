@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import EnterLostDisc from "./components/EnterLostDisc";
-import Inventory from "./components/Inventory";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import "./styles/App.css";
 import { Box, Button, ButtonGroup, Typography } from "@mui/material"; // Import Button and ButtonGroup from MUI
-import AdminPanel from "./components/AdminPanel";
 import PublicInventory from "./components/PublicHub";
 import PublicHub from "./components/PublicHub";
+import "./styles/App.css";
 
 // Define a Disc interface
 export interface Disc {
@@ -19,39 +22,49 @@ export interface Disc {
   dateFound: string;
   dateTexted?: string | null;
   dateClaimed?: string | null;
-  status: string;
+  status: DiscStateString;
   comments?: string | null;
   color: string;
   claimBy?: string | null;
   brand?: string | null;
   dateSold?: string | null;
 }
+export enum DiscStateString {
+  New = "NEW",
+  Unclaimed = "UNCLAIMED",
+  PendingDropoff = "PENDING_DROPOFF",
+  PendingStorePickup = "PENDING_STORE_PICKUP",
+  PendingCoursePickup = "PENDING_COURSE_PICKUP",
+  Claimed = "CLAIMED",
+  PickupOverdue = "PICKUP_OVERDUE",
+  ForSale = "FOR_SALE",
+  Sold = "SOLD",
+  SoldOffline = "SOLD_OFFLINE",
+  Surrendered = "SURRENDERED",
+}
 
-export const API_BASE_URL = "https://api.discrescuenetwork.com"; //production URL
+//export const API_BASE_URL = "https://api.discrescuenetwork.com"; //production URL
 //export const API_BASE_URL = "http://127.0.0.1:3001"; // local testing
-
-//export const API_BASE_URL = "https://lost-and-found-api-gl8z.onrender.com"; //OLD production URL
+//export const API_BASE_URL = `https://api-drn-env.eba-6jyxgrtu.us-east-1.elasticbeanstalk.com`;
+export const API_BASE_URL = `https://lost-and-found-api-gl8z.onrender.com`;
 
 function App() {
-  const [activeTab, setActiveTab] = useState("enterLostDisc"); // Default active tab
-
-  const switchTab = (tabName: string) => {
-    setActiveTab(tabName);
-  };
+  const course = process.env.REACT_APP_COURSE_NAME;
 
   return (
     <Box
       sx={{
-        height: "100%",
-        width: "100%",
+        height: "auto",
+        width: "auto",
         display: "flex",
         flexDirection: "column",
       }}
     >
       <Routes>
         <Route path="/" element={<PublicHub />} />
-        <Route path="/Admin" element={<AdminPanel />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <p className="copywrite">Copyright 2024 Disc Rescue Network LLC</p>
     </Box>
   );
 }
