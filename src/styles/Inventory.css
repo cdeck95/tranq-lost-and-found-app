@@ -135,7 +135,8 @@ button {
   color: var(--primary-white);
   border: 2px solid var(--border-primary-blue);
   font-family: "Bebas Neue";
-  font-weight: 300;
+  font-weight: 400;
+  letter-spacing: 0.75px;
   padding: 6px 12px;
   font-size: 1rem;
   margin: 5px;
@@ -295,4 +296,12 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.blue-italics {
+  font-style: italic;
+  color: var(--primary-blue);
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
 }
